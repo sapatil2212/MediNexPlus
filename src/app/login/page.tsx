@@ -251,12 +251,7 @@ export default function LoginPage() {
         <div className="mn-auth-bg2" />
 
         <Link href="/" className="mn-auth-logo">
-          <div className="mn-auth-logo-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-            </svg>
-          </div>
-          <span className="mn-auth-logo-text">MediNex<span className="mn-auth-logo-plus">+</span></span>
+          <img src="/logo/medinexplus-logo-normal.png" alt="MediNexPlus" style={{ height: 42, width: "auto", objectFit: "contain" }} />
         </Link>
 
         <div className="mn-auth-card">

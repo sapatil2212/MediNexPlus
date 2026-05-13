@@ -235,12 +235,7 @@ export default function HospitalSignupPage() {
         <div className="mn-sp-bg2" />
 
         <Link href="/" className="mn-sp-logo">
-          <div className="mn-sp-logo-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-            </svg>
-          </div>
-          <span className="mn-sp-logo-text">MediNex<span className="mn-sp-logo-plus">+</span></span>
+          <img src="/logo/medinexplus-logo-normal.png" alt="MediNexPlus" style={{ height: 42, width: "auto", objectFit: "contain" }} />
         </Link>
 
         {/* Step indicator */}

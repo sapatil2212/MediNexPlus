@@ -727,12 +727,7 @@ export default function MediNexLanding() {
       <nav className={`mn-nav${scrolled ? " scrolled" : ""}`}>
         <div className="mn-nav-inner">
           <Link href="/" className="mn-logo">
-            <div className="mn-logo-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-              </svg>
-            </div>
-            <span className="mn-logo-text">MediNex<span className="mn-logo-plus">+</span></span>
+            <img src="/logo/medinexplus-logo-normal.png" alt="MediNexPlus" style={{ height: 38, width: "auto", objectFit: "contain" }} />
           </Link>
 
           <div className="mn-nav-links">
@@ -1674,12 +1669,7 @@ export default function MediNexLanding() {
           <div className="mn-footer-top">
             <div className="mn-footer-brand">
               <Link href="/" className="mn-logo">
-                <div className="mn-logo-icon">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                  </svg>
-                </div>
-                <span className="mn-logo-text">MediNex<span className="mn-logo-plus">+</span></span>
+                <img src="/logo/medinexplus-logo-white.png" alt="MediNexPlus" style={{ height: 36, width: "auto", objectFit: "contain" }} />
               </Link>
               <p>Smarter healthcare connecting doctors and patients. The multi-tenant HMS SaaS platform for modern healthcare providers.</p>
             </div>
