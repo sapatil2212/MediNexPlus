@@ -322,6 +322,15 @@ export async function PATCH(req: NextRequest) {
     const hospitalId = (profile as any).hospitalId;
     const subDeptName = (profile as any).name as string;
 
+    const hospitalSettings = await (prisma as any).hospitalSettings.findUnique({
+      where: { hospitalId },
+      select: { hospitalName: true },
+    }).catch(() => null);
+    const hospitalInfo = hospitalSettings?.hospitalName
+      ? { name: hospitalSettings.hospitalName }
+      : await prisma.hospital.findUnique({ where: { id: hospitalId }, select: { name: true } }).catch(() => null);
+    const hospitalName = hospitalInfo?.name || "Your Hospital";
+
     const appt = await (prisma as any).appointment.findFirst({
       where: { id: appointmentId, hospitalId },
       include: { patient: { select: { name: true, phone: true, email: true } } },
@@ -350,11 +359,21 @@ export async function PATCH(req: NextRequest) {
       const name = appt.patient?.name || patientName || "Patient";
       if (patientEmail) {
         try {
+          const emailUsername = (process.env.EMAIL_USERNAME || "").trim();
+          const emailPassword = (process.env.EMAIL_PASSWORD || "").replace(/\s/g, "");
+
+          console.log("[SubDept Queue Mailer] SMTP config", {
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            user: emailUsername ? `${emailUsername.slice(0, 4)}***${emailUsername.slice(-10)}` : "NOT SET",
+            passLength: emailPassword.length,
+          });
+
           const transporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: Number(process.env.EMAIL_PORT),
             secure: false,
-            auth: { user: process.env.EMAIL_USERNAME, pass: process.env.EMAIL_PASSWORD },
+            auth: { user: emailUsername, pass: emailPassword },
           });
           const formattedDate = new Date(newDate).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
           const [h, m] = newTimeSlot.split(":");
@@ -369,7 +388,7 @@ export async function PATCH(req: NextRequest) {
   <tr><td align="center">
     <table width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;background:#ffffff;border-radius:14px;border:1px solid #e5e7eb;overflow:hidden;">
       <tr><td style="padding:28px 36px 20px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);">
-        <p style="margin:0 0 2px;font-size:11px;font-weight:600;color:#bfdbfe;letter-spacing:.08em;text-transform:uppercase;">MediCare+</p>
+        <p style="margin:0 0 2px;font-size:11px;font-weight:600;color:#bfdbfe;letter-spacing:.08em;text-transform:uppercase;">${hospitalName}</p>
         <h1 style="margin:0;font-size:20px;font-weight:700;color:#ffffff;">Procedure Rescheduled</h1>
       </td></tr>
       <tr><td style="padding:28px 36px;">
@@ -389,17 +408,17 @@ export async function PATCH(req: NextRequest) {
         <p style="margin:0;font-size:13px;color:#9ca3af;line-height:1.6;">If you have any questions, please contact us. We apologize for any inconvenience.</p>
       </td></tr>
       <tr><td style="padding:16px 36px 24px;border-top:1px solid #f3f4f6;text-align:center;">
-        <p style="margin:0;font-size:11px;color:#d1d5db;">&copy; ${year} MediCare+ &middot; Automated message &mdash; please do not reply.</p>
+        <p style="margin:0;font-size:11px;color:#d1d5db;">&copy; ${year} ${hospitalName} &middot; Automated message &mdash; please do not reply.</p>
       </td></tr>
     </table>
   </td></tr>
 </table>
 </body></html>`;
           await transporter.sendMail({
-            from: process.env.EMAIL_USERNAME ? `"MediCare+" <${process.env.EMAIL_USERNAME}>` : '"MediCare+" <no-reply@medicare.com>',
+            from: emailUsername ? `"${hospitalName}" <${emailUsername}>` : `"${hospitalName}" <no-reply@medinexplus.com>`,
             to: patientEmail,
             subject: `Procedure Rescheduled – ${formattedDate} at ${formattedTime} | ${subDeptName}`,
-            text: `Dear ${name},\n\nYour procedure at ${subDeptName} has been rescheduled to ${formattedDate} at ${formattedTime}.\n\n${remarks ? `Note: ${remarks}\n\n` : ""}If you have questions, please contact us.\n\nMediCare+`,
+            text: `Dear ${name},\n\nYour procedure at ${subDeptName} has been rescheduled to ${formattedDate} at ${formattedTime}.\n\n${remarks ? `Note: ${remarks}\n\n` : ""}If you have questions, please contact us.\n\n${hospitalName}`,
             html,
           });
         } catch (emailErr) {

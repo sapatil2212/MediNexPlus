@@ -4,13 +4,23 @@ import nodemailer from "nodemailer";
 import { env } from "../config/env";
 import { sendOTPviaSMS } from "../utils/sms";
 
+const emailUsername = env.EMAIL_USERNAME.trim();
+const emailPassword = env.EMAIL_PASSWORD.replace(/\s/g, "");
+
+console.log("[OTP Mailer] SMTP config", {
+  host: env.EMAIL_HOST,
+  port: env.EMAIL_PORT,
+  user: emailUsername ? `${emailUsername.slice(0, 4)}***${emailUsername.slice(-10)}` : "NOT SET",
+  passLength: emailPassword.length,
+});
+
 const transporter = nodemailer.createTransport({
   host: env.EMAIL_HOST,
   port: Number(env.EMAIL_PORT),
   secure: false,
   auth: {
-    user: env.EMAIL_USERNAME,
-    pass: env.EMAIL_PASSWORD,
+    user: emailUsername,
+    pass: emailPassword,
   },
 });
 
@@ -44,7 +54,7 @@ export const requestOTP = async (email: string, mobile?: string) => {
 
       <tr>
         <td style="padding:32px 40px 24px;border-bottom:1px solid #f3f4f6;">
-          <p style="margin:0 0 2px;font-size:12px;font-weight:600;color:#9ca3af;letter-spacing:0.08em;text-transform:uppercase;">MediGrowNex</p>
+          <p style="margin:0 0 2px;font-size:12px;font-weight:600;color:#9ca3af;letter-spacing:0.08em;text-transform:uppercase;">MediNexPlus</p>
           <h1 style="margin:0;font-size:20px;font-weight:700;color:#111827;">Email Verification</h1>
         </td>
       </tr>
@@ -52,7 +62,7 @@ export const requestOTP = async (email: string, mobile?: string) => {
       <tr>
         <td style="padding:32px 40px 24px;">
           <p style="margin:0 0 24px;font-size:14px;color:#6b7280;line-height:1.65;">
-            Use the one-time code below to complete your hospital registration on MediGrowNex.
+            Use the one-time code below to complete your hospital registration on MediNexPlus.
             This code is valid for <strong style="color:#374151;">10 minutes</strong>.
           </p>
 
@@ -69,7 +79,7 @@ export const requestOTP = async (email: string, mobile?: string) => {
       <tr>
         <td style="padding:16px 40px 24px;border-top:1px solid #f3f4f6;text-align:center;">
           <p style="margin:0;font-size:11px;color:#d1d5db;">
-            &copy; ${year} MediGrowNex &middot; Contact: 7745868073 / 8830553868 &middot; Automated message &mdash; please do not reply.
+            &copy; ${year} MediNexPlus &middot; Automated message &mdash; please do not reply.
           </p>
         </td>
       </tr>
@@ -82,10 +92,10 @@ export const requestOTP = async (email: string, mobile?: string) => {
 
     await transporter.sendMail({
       from: Object.is(env.EMAIL_USERNAME, "")
-        ? '"MediGrowNex" <no-reply@medigrownex.com>'
-        : `"MediGrowNex" <${env.EMAIL_USERNAME}>`,
+        ? '"MediNexPlus" <no-reply@medinexplus.com>'
+        : `"MediNexPlus" <${env.EMAIL_USERNAME}>`,
       to: email,
-      subject: "Your Verification Code – MediGrowNex",
+      subject: "Your Verification Code – MediNexPlus",
       text: `Your OTP is: ${otp}\n\nValid for 10 minutes. Do not share this code.`,
       html,
     });

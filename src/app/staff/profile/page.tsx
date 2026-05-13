@@ -142,7 +142,7 @@ export default function StaffProfilePage() {
         <aside className="sd-sb">
           <div className="sd-sb-logo">
             <div className="sd-logo-ic"><Heart size={18} color="white"/></div>
-            <div><div className="sd-logo-tx">MediCare+</div><div className="sd-logo-sub">Staff Portal</div></div>
+            <div><div className="sd-logo-tx">{user?.hospital?.name || "MediNexPlus"}</div><div className="sd-logo-sub">Staff Portal</div></div>
           </div>
           <nav className="sd-nav">
             <div className="sd-nav-sec">Main</div>

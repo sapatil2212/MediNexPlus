@@ -218,7 +218,7 @@ export default function ReceptionistDashboard() {
           ) : (
             <>
               <div className="rec-logo-ic"><Stethoscope size={18} color="white"/></div>
-              <div><div className="rec-logo-tx">{hospitalSettings?.hospitalName || user?.hospital?.name || "MediCare+"}</div><div className="rec-logo-sub">Front Desk</div></div>
+              <div><div className="rec-logo-tx">{hospitalSettings?.hospitalName || user?.hospital?.name || "MediNexPlus"}</div><div className="rec-logo-sub">Front Desk</div></div>
             </>
           )}
         </div>

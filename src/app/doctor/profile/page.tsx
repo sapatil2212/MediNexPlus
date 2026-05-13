@@ -28,6 +28,7 @@ export default function DoctorProfilePage() {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+  const [hospitalName, setHospitalName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function DoctorProfilePage() {
       .then((r) => r.json())
       .then((d) => {
         if (!d.success || d.data.role !== "DOCTOR") { router.push("/login"); return; }
+        if (d.data.hospital?.name) setHospitalName(d.data.hospital.name);
         // Fetch doctor details
         fetch("/api/doctors/me", { credentials: "include" })
           .then(r => r.json())
@@ -151,7 +153,7 @@ export default function DoctorProfilePage() {
         <aside className="doc-sb">
           <div className="doc-sb-logo">
             <div className="doc-logo-ic"><Stethoscope size={18} color="white"/></div>
-            <div><div className="doc-logo-tx">MediCare+</div><div className="doc-logo-sub">Doctor Portal</div></div>
+            <div><div className="doc-logo-tx">{hospitalName || "MediNexPlus"}</div><div className="doc-logo-sub">Doctor Portal</div></div>
           </div>
           <nav className="doc-nav">
             <div className="doc-nav-sec">Main</div>

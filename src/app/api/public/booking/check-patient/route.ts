@@ -5,8 +5,12 @@ import { verifyToken } from "../../../../../../backend/utils/jwt";
 
 export const dynamic = "force-dynamic";
 
-async function resolveHospitalId(hid: string | null, req: NextRequest): Promise<string | null> {
+async function resolveHospitalId(hid: string | null, slug: string | null, req: NextRequest): Promise<string | null> {
   if (hid) return hid;
+  if (slug) {
+    const s = await prisma.hospitalSettings.findUnique({ where: { bookingSlug: slug }, select: { hospitalId: true } });
+    if (s?.hospitalId) return s.hospitalId;
+  }
   const token = req.cookies.get("hms_session")?.value;
   if (token) {
     try {
@@ -14,8 +18,7 @@ async function resolveHospitalId(hid: string | null, req: NextRequest): Promise<
       if (payload?.hospitalId) return payload.hospitalId;
     } catch {}
   }
-  const first = await prisma.hospital.findFirst({ select: { id: true }, orderBy: { createdAt: "desc" } });
-  return first?.id || null;
+  return null;
 }
 
 /* GET /api/public/booking/check-patient?phone=X&email=Y&hid=Z */
@@ -27,7 +30,7 @@ export async function GET(req: NextRequest) {
   if (!phone && !email) return successResponse(null, "No patient found");
 
   try {
-    const hid = await resolveHospitalId(searchParams.get("hid"), req);
+    const hid = await resolveHospitalId(searchParams.get("hid"), searchParams.get("slug"), req);
     if (!hid) return errorResponse("No hospital found", 404);
 
     // Check phone first (most reliable identifier)

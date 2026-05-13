@@ -46,10 +46,13 @@ export const sendLabReport = async (opts: {
   });
 };
 
-const smtpUser = process.env.EMAIL_USERNAME || process.env.SMTP_USER;
-const smtpPass = process.env.EMAIL_PASSWORD || process.env.SMTP_PASS;
+const smtpUser = (process.env.EMAIL_USERNAME || process.env.SMTP_USER || "").trim();
+const smtpPass = (process.env.EMAIL_PASSWORD || process.env.SMTP_PASS || "").replace(/\s/g, "");
 
-console.log("[Mailer] Config:", { user: smtpUser ? smtpUser.substring(0, 5) + "***" : "NOT SET", passSet: !!smtpPass });
+console.log("[Mailer] Config:", {
+  user: smtpUser ? `${smtpUser.slice(0, 4)}***${smtpUser.slice(-10)}` : "NOT SET",
+  passLength: smtpPass.length,
+});
 
 const transporter = nodemailer.createTransport({
   service: "gmail",

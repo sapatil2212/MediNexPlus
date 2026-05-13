@@ -67,12 +67,20 @@ function SectionCard({icon,title,desc,children}:{icon:React.ReactNode;title:stri
 function QrCodeSection({ hospitalId }: { hospitalId: string }) {
   const [origin, setOrigin] = useState("");
   const [copied, setCopied] = useState(false);
+  const [bookingSlug, setBookingSlug] = useState("");
 
-  useEffect(() => { setOrigin(window.location.origin); }, []);
+  useEffect(() => {
+    setOrigin(window.location.origin);
+    api("/api/config/settings").then(d => {
+      if (d.data?.settings?.bookingSlug) setBookingSlug(d.data.settings.bookingSlug);
+    });
+  }, []);
 
   if (!hospitalId || !origin) return null;
 
-  const bookingUrl = `${origin}/appointment?hid=${hospitalId}`;
+  const bookingUrl = bookingSlug
+    ? `${origin}/book/${bookingSlug}`
+    : `${origin}/appointment?hid=${hospitalId}`;
   const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(bookingUrl)}&color=0E898F&bgcolor=ffffff&margin=12`;
 
   const copyUrl = () => {
@@ -137,7 +145,7 @@ function QrCodeSection({ hospitalId }: { hospitalId: string }) {
 }
 
 function SettingsPanel({hospitalId}:{hospitalId:string}){
-  const [f,setF]=useState({hospitalName:"",address:"",phone:"",email:"",website:"",timezone:"Asia/Kolkata",currency:"INR",gstNumber:"",registrationNo:"",letterhead:"",letterheadType:"IMAGE",letterheadSize:"A4",logo:""});
+  const [f,setF]=useState({hospitalName:"",bookingSlug:"",address:"",phone:"",email:"",website:"",timezone:"Asia/Kolkata",currency:"INR",gstNumber:"",registrationNo:"",letterhead:"",letterheadType:"IMAGE",letterheadSize:"A4",logo:""});
   const [saving,setSaving]=useState(false);
   const [uploading,setUploading]=useState(false);
   const [uploadingLogo,setUploadingLogo]=useState(false);
@@ -148,7 +156,7 @@ function SettingsPanel({hospitalId}:{hospitalId:string}){
       if(d.data?.settings){
         const s=d.data.settings;
         setF({
-          hospitalName:s.hospitalName||"",address:s.address||"",phone:s.phone||"",email:s.email||"",
+          hospitalName:s.hospitalName||"",bookingSlug:s.bookingSlug||"",address:s.address||"",phone:s.phone||"",email:s.email||"",
           website:s.website||"",timezone:s.timezone||"Asia/Kolkata",currency:s.currency||"INR",
           gstNumber:s.gstNumber||"",registrationNo:s.registrationNo||"",letterhead:s.letterhead||"",
           letterheadType:s.letterheadType||"IMAGE",letterheadSize:s.letterheadSize||"A4",logo:s.logo||""
@@ -213,6 +221,14 @@ function SettingsPanel({hospitalId}:{hospitalId:string}){
           <div style={{flex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
             {field("hospitalName","Hospital Name *","City General Hospital",true)}
             {field("website","Website","https://hospital.com")}
+            <div className="cfg-field" style={{gridColumn:"1/-1"}}>
+              <label className="cfg-lbl">Booking Page Slug</label>
+              <div style={{display:"flex",alignItems:"center",gap:0,background:"#f8fafc",border:"1.5px solid #e2e8f0",borderRadius:9,overflow:"hidden"}}>
+                <span style={{padding:"10px 12px",fontSize:11,color:"#94a3b8",fontWeight:600,whiteSpace:"nowrap",borderRight:"1px solid #e2e8f0",background:"#f1f5f9"}}>{typeof window!=="undefined"?window.location.origin:""}/book/</span>
+                <input style={{flex:1,border:"none",background:"transparent",padding:"10px 13px",fontSize:12,color:"#1e293b",outline:"none"}} placeholder="my-hospital" value={f.bookingSlug} onChange={e=>{const v=e.target.value.toLowerCase().replace(/[^a-z0-9-]/g,"").replace(/--+/g,"-");setF(p=>({...p,bookingSlug:v}));}}/>
+              </div>
+              <span style={{fontSize:10,color:"#94a3b8",marginTop:3,display:"block"}}>URL-friendly slug (lowercase, hyphens only). Patients will visit <strong>/book/{f.bookingSlug||"your-slug"}</strong> to book appointments.</span>
+            </div>
             <div className="cfg-field" style={{gridColumn:"1/-1"}}>
               <label className="cfg-lbl">Address</label>
               <input className="cfg-input" placeholder="123 Medical Lane, City" value={f.address} onChange={e=>setF(p=>({...p,address:e.target.value}))}/>

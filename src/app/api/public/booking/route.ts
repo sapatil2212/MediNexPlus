@@ -8,18 +8,24 @@ import { findPatientByPhone, generatePatientId, createPatient } from "../../../.
 export const dynamic = "force-dynamic";
 
 
-async function resolveHospitalId(hid: string | null): Promise<string> {
+async function resolveHospitalId(hid: string | null, slug: string | null): Promise<string | null> {
   if (hid) return hid;
-  // Hardcoded for MediNex+ portal (TODO: make configurable for multi-hospital)
-  return "fd92c618-f6dc-42da-96ae-762a09d19f25";
+  if (slug) {
+    const settings = await prisma.hospitalSettings.findUnique({
+      where: { bookingSlug: slug },
+      select: { hospitalId: true },
+    });
+    return settings?.hospitalId || null;
+  }
+  return null;
 }
 
-/* ── GET /api/public/booking?hid=HOSPITAL_ID ── */
+/* ── GET /api/public/booking?hid=HOSPITAL_ID or ?slug=SLUG ── */
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   try {
-    const hid = await resolveHospitalId(searchParams.get("hid"));
-    if (!hid) return errorResponse("No hospital found", 404);
+    const hid = await resolveHospitalId(searchParams.get("hid"), searchParams.get("slug"));
+    if (!hid) return errorResponse("No hospital found. Please use a valid booking link.", 404);
     const hospital = await prisma.hospital.findUnique({
       where: { id: hid },
       select: { id: true, name: true },
@@ -57,7 +63,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { name, phone, email, doctorId, departmentId, appointmentDate, timeSlot, type, consultationFee, notes, existingPatientId, forceNew } = body;
-    const hospitalId = await resolveHospitalId(body.hospitalId || null);
+    const hospitalId = await resolveHospitalId(body.hospitalId || null, body.slug || null);
     if (!hospitalId) return errorResponse("No hospital found", 404);
 
     if (!name || !phone || !appointmentDate) {

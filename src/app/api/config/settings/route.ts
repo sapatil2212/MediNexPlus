@@ -7,6 +7,7 @@ import { z } from "zod";
 
 const settingsSchema = z.object({
   hospitalName: z.string().min(2),
+  bookingSlug: z.string().min(3).max(60).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase alphanumeric with hyphens only (e.g. my-hospital)").optional().nullable(),
   logo: z.string().optional(),
   address: z.string().optional(),
   phone: z.string().optional(),

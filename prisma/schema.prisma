@@ -118,6 +118,7 @@ model HospitalSettings {
   id             String  @id @default(uuid())
   hospitalId     String  @unique
   hospitalName   String
+  bookingSlug    String? @unique
   logo           String?
   address        String? @db.Text
   phone          String?

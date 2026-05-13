@@ -218,7 +218,7 @@ export default function StaffDashboard() {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
           </div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: "#1e293b" }}>MediCare+</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "#1e293b" }}>{profile?.hospital?.name || "MediNexPlus"}</div>
             <div style={{ fontSize: 10, color: "#94a3b8" }}>Staff Portal</div>
           </div>
         </div>

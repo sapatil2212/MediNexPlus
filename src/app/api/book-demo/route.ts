@@ -10,14 +10,23 @@ export async function POST(req: NextRequest) {
     }
 
     const SUPER_ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL || "dreampropertiesnashik@gmail.com";
+    const emailUsername = (process.env.EMAIL_USERNAME || "").trim();
+    const emailPassword = (process.env.EMAIL_PASSWORD || "").replace(/\s/g, "");
+
+    console.log("[Book Demo Mailer] SMTP config", {
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      user: emailUsername ? `${emailUsername.slice(0, 4)}***${emailUsername.slice(-10)}` : "NOT SET",
+      passLength: emailPassword.length,
+    });
 
     const transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: Number(process.env.EMAIL_PORT) || 587,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
+        user: emailUsername,
+        pass: emailPassword,
       },
     });
 

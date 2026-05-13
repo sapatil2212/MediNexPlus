@@ -21,6 +21,7 @@ export const getSettings = async (hospitalId: string) => {
   return {
     hospitalId,
     hospitalName: hospital.name,
+    bookingSlug: null,
     email: hospital.email,
     phone: hospital.mobile,
     address: "",
@@ -36,7 +37,7 @@ export const getSettings = async (hospitalId: string) => {
 };
 
 export const upsertSettings = async (hospitalId: string, data: {
-  hospitalName: string; logo?: string; address?: string; phone?: string;
+  hospitalName: string; bookingSlug?: string | null; logo?: string; address?: string; phone?: string;
   email?: string; website?: string; timezone?: string; currency?: string;
   gstNumber?: string; registrationNo?: string;
   letterhead?: string; letterheadType?: string; letterheadSize?: string;
