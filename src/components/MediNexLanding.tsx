@@ -398,8 +398,8 @@ export default function MediNexLanding() {
         @keyframes float-y { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
         .mn-why-icon { width: 48px; height: 48px; border-radius: 14px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: rgba(255,255,255,0.9); }
         .mn-how-step-icon { width: 64px; height: 64px; border-radius: 20px; background: ${PURPLE_50}; border: 2px solid ${PURPLE_200}; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: ${PURPLE}; }
-        @media (max-width: 900px) { .mn-hero-stamp { display: none; } .mn-dash-body { grid-template-columns: 1fr; } .mn-dash-col { border-right: none; border-bottom: 1px solid #F1F5F9; } .mn-hero-review, .mn-hero-trusted { display: none; } }
-        @media (max-width: 640px) { .mn-hero-decos { padding: 0 16px; } .mn-hero-dash-area { margin-top: 32px; } }
+        @media (max-width: 900px) { .mn-hero-stamp { display: none; } .mn-hero-review, .mn-hero-trusted { display: none; } }
+        @media (max-width: 640px) { .mn-hero-decos { padding: 0 16px; } }
 
         /* TRUSTED */
         .mn-trusted { padding: 40px 5%; background: #fff; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
@@ -721,13 +721,365 @@ export default function MediNexLanding() {
         .mn-vr-timer { font-size: 10px; color: rgba(255,255,255,0.35); }
 
         @media (max-width: 640px) { .mn-ai-tabs { flex-direction: column; width: 100%; } .mn-ai-tab { justify-content: center; } .mn-ai-stats { gap: 14px; } }
+
+        /* ══════════════════════════════════════
+           PRICING BASE STYLES
+           ══════════════════════════════════════ */
+        .mn-pricing { padding: 96px 5%; background: #F5F0FF; }
+        .mn-pricing-inner { max-width: 1200px; margin: 0 auto; text-align: center; }
+        .mn-billing-toggle { display: inline-flex; background: #fff; border-radius: 12px; padding: 4px; border: 1.5px solid #EDE9FE; margin-bottom: 48px; }
+        .mn-billing-opt { padding: 8px 20px; font-size: 13px; font-weight: 600; border: none; border-radius: 9px; cursor: pointer; transition: all 0.2s; font-family: 'Inter',sans-serif; }
+        .mn-billing-opt.active { background: linear-gradient(135deg, ${PURPLE}, ${PURPLE_DARK}); color: #fff; box-shadow: 0 2px 10px rgba(124,58,237,0.3); }
+        .mn-billing-opt.inactive { background: transparent; color: ${GRAY}; }
+        .mn-billing-save { background: #DCFCE7; color: #059669; font-size: 10px; padding: 2px 6px; border-radius: 6px; margin-left: 6px; }
+        .mn-pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; text-align: left; }
+        .mn-price-card { background: #fff; border-radius: 20px; padding: 32px 28px; border: 1.5px solid ${PURPLE_100}; position: relative; transition: all 0.3s; }
+        .mn-price-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(124,58,237,0.12); }
+        .mn-price-card.primary { background: linear-gradient(150deg, ${PURPLE}, #5B21B6); border-color: transparent; }
+        .mn-price-card.primary:hover { box-shadow: 0 12px 40px rgba(124,58,237,0.35); }
+        .mn-price-badge { position: absolute; top: -12px; right: 20px; background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 14px; border-radius: 100px; }
+        .mn-price-name { font-size: 20px; font-weight: 800; color: ${DARK}; margin-bottom: 6px; }
+        .mn-price-card.primary .mn-price-name { color: #fff; }
+        .mn-price-desc { font-size: 13px; color: ${GRAY}; margin-bottom: 20px; line-height: 1.5; }
+        .mn-price-card.primary .mn-price-desc { color: rgba(255,255,255,0.7); }
+        .mn-price-amount { display: flex; align-items: baseline; gap: 2px; margin-bottom: 4px; }
+        .mn-price-currency { font-size: 20px; font-weight: 700; color: ${DARK}; }
+        .mn-price-card.primary .mn-price-currency { color: #fff; }
+        .mn-price-num { font-size: 42px; font-weight: 900; color: ${DARK}; letter-spacing: -0.03em; line-height: 1; }
+        .mn-price-card.primary .mn-price-num { color: #fff; }
+        .mn-price-per { font-size: 14px; color: ${GRAY}; font-weight: 500; margin-left: 2px; }
+        .mn-price-card.primary .mn-price-per { color: rgba(255,255,255,0.6); }
+        .mn-price-period-note { font-size: 12px; color: #94A3B8; margin-bottom: 20px; }
+        .mn-price-card.primary .mn-price-period-note { color: rgba(255,255,255,0.5); }
+        .mn-price-divider { height: 1px; background: ${PURPLE_100}; margin-bottom: 20px; }
+        .mn-price-card.primary .mn-price-divider { background: rgba(255,255,255,0.15); }
+        .mn-price-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .mn-price-feature { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; }
+        .mn-price-feature.on { color: ${DARK}; }
+        .mn-price-feature.off { color: #CBD5E1; }
+        .mn-price-card.primary .mn-price-feature.on { color: rgba(255,255,255,0.9); }
+        .mn-price-card.primary .mn-price-feature.off { color: rgba(255,255,255,0.3); }
+        .mn-price-check { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+        .mn-price-feature.on .mn-price-check { background: #DCFCE7; color: #059669; }
+        .mn-price-feature.off .mn-price-check { background: #F1F5F9; color: #CBD5E1; }
+        .mn-price-card.primary .mn-price-feature .mn-price-check { background: rgba(255,255,255,0.15); color: #fff; }
+        .mn-price-cta { width: 100%; padding: 12px; background: #fff; color: ${PURPLE}; border: 1.5px solid ${PURPLE_200}; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Inter',sans-serif; }
+        .mn-price-cta:hover { background: ${PURPLE_50}; border-color: ${PURPLE}; }
+        .mn-price-note { font-size: 11px; color: #94A3B8; text-align: center; margin-top: 12px; }
+
+        /* ══════════════════════════════════════
+           RESPONSIVE – TABLET (≤768px)
+           ══════════════════════════════════════ */
+        @media (max-width: 768px) {
+          .mn-hero { padding: 100px 5% 0; min-height: auto; }
+          .mn-hero h1 { font-size: clamp(24px, 5.5vw, 36px); }
+          .mn-hero-sub { font-size: 13.5px; max-width: 400px; margin-bottom: 22px; }
+          .mn-hero-badge { font-size: 11px; padding: 5px 12px; margin-bottom: 20px; }
+          .mn-btn-hero-primary { padding: 9px 20px; font-size: 13px; }
+          .mn-btn-free-trial { padding: 7px 16px; font-size: 12px; }
+          .mn-hero-dash-area { transform: scale(0.82); transform-origin: top center; margin-bottom: -60px; }
+          .mn-dash-body { min-height: 270px; }
+          .mn-solutions { padding: 64px 5%; }
+          .mn-solutions-hd-title { font-size: clamp(24px, 4vw, 32px); }
+          .mn-solutions-hd-sub { font-size: 14px; }
+          .mn-ai-rx { padding: 64px 5%; }
+          .mn-ai-rx-title { font-size: clamp(28px, 4vw, 40px); }
+          .mn-why { padding: 56px 5%; }
+          .mn-how { padding: 64px 5%; }
+          .mn-testi { padding: 64px 5%; }
+          .mn-faq { padding: 64px 5%; }
+          .mn-cta { padding: 56px 5%; }
+          .mn-pricing { padding: 64px 5%; }
+          .mn-pricing-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+          .mn-section-title { font-size: clamp(24px, 4vw, 32px); }
+          .mn-section-sub { font-size: 14px; }
+          .mn-section-tag { font-size: 11px; padding: 4px 12px; }
+        }
+
+        /* ══════════════════════════════════════
+           RESPONSIVE – MOBILE (≤640px)
+           ══════════════════════════════════════ */
+        @media (max-width: 640px) {
+          .mn-hero { padding: 82px 4% 0; padding-bottom: 0; }
+          .mn-hero h1 { font-size: clamp(22px, 5.8vw, 30px); margin-bottom: 10px; }
+          .mn-hero-sub { font-size: 12.5px; line-height: 1.6; max-width: 340px; margin-bottom: 18px; }
+          .mn-hero-badge { font-size: 10px; padding: 4px 10px; margin-bottom: 16px; gap: 5px; }
+          .mn-btn-hero-primary { padding: 8px 18px; font-size: 12.5px; gap: 6px; }
+          .mn-btn-free-trial { padding: 7px 14px; font-size: 11px; }
+          .mn-hero-dash-area { margin-top: 20px; transform: scale(0.88); transform-origin: top center; margin-bottom: -60px; }
+          .mn-hero-dash-window { border-radius: 14px 14px 0 0; }
+          .mn-dash-body { min-height: 180px; max-height: 220px; overflow: hidden; grid-template-columns: 22% 78%; }
+          .mn-dash-right { display: none; }
+          .mn-dash-topbar { padding: 6px 10px; }
+          .mn-dash-topbar-logo-text { display: none; }
+          .mn-dash-pg-title { font-size: 12px; }
+          .mn-dash-kpi-num { font-size: 14px; }
+          .mn-dash-kpi-lbl { font-size: 6.5px; }
+          .mn-solutions { padding: 48px 4%; }
+          .mn-solutions-hd { margin-bottom: 32px; }
+          .mn-solutions-hd-title { font-size: clamp(22px, 5vw, 28px); }
+          .mn-solutions-hd-sub { font-size: 13px; }
+          .mn-sol-card-content { padding: 24px 20px 0; }
+          .mn-sol-card-h { font-size: 18px; }
+          .mn-sol-feat { font-size: 12.5px; }
+          .mn-sol-pill { font-size: 11px; padding: 4px 11px; }
+          .mn-ai-rx { padding: 48px 4%; }
+          .mn-ai-rx-badge { font-size: 11px; padding: 6px 14px; margin-bottom: 16px; }
+          .mn-ai-rx-title { font-size: clamp(24px, 5vw, 34px); margin-bottom: 12px; }
+          .mn-ai-rx-sub { font-size: 14px; }
+          .mn-ai-info-h { font-size: clamp(20px, 4vw, 26px); }
+          .mn-ai-info-p { font-size: 13px; }
+          .mn-ai-benefit { padding: 12px 14px; }
+          .mn-ai-benefit-title { font-size: 13px; }
+          .mn-ai-benefit-desc { font-size: 12px; }
+          .mn-ai-benefit-icon { width: 34px; height: 34px; }
+          .mn-ai-stat-num { font-size: 22px; }
+          .mn-ai-stat-lbl { font-size: 11px; }
+          .mn-why { padding: 40px 4%; }
+          .mn-why-container { padding: 28px 16px 24px; border-radius: 20px; }
+          .mn-why-hd-title { font-size: clamp(20px, 4.5vw, 28px); }
+          .mn-why-hd-sub { font-size: 12.5px; }
+          .mn-why-card { padding: 20px 18px; border-radius: 14px; }
+          .mn-why-icon { width: 32px; height: 32px; border-radius: 8px; margin-bottom: 12px; }
+          .mn-why-title { font-size: 13px; }
+          .mn-why-desc { font-size: 11.5px; }
+          .mn-how { padding: 48px 4%; }
+          .mn-how-step-num { font-size: 40px; }
+          .mn-how-step-icon { width: 50px; height: 50px; border-radius: 14px; }
+          .mn-how-step-title { font-size: 15px; }
+          .mn-how-step-desc { font-size: 12.5px; }
+          .mn-how-steps { gap: 24px; margin-top: 36px; }
+          .mn-testi { padding: 48px 4%; }
+          .mn-testi-card { padding: 22px; border-radius: 16px; }
+          .mn-testi-text { font-size: 13px; margin-bottom: 16px; }
+          .mn-testi-avatar { width: 36px; height: 36px; font-size: 12px; }
+          .mn-testi-name { font-size: 13px; }
+          .mn-testi-role { font-size: 11px; }
+          .mn-star { font-size: 14px; }
+          .mn-testi-grid { gap: 16px; margin-top: 36px; }
+          .mn-pricing { padding: 48px 4%; }
+          .mn-pricing-grid { gap: 18px; }
+          .mn-price-card { padding: 24px 20px; border-radius: 16px; }
+          .mn-price-name { font-size: 18px; }
+          .mn-price-num { font-size: 34px; }
+          .mn-price-desc { font-size: 12px; }
+          .mn-price-feature { font-size: 12px; gap: 8px; }
+          .mn-price-check { width: 16px; height: 16px; font-size: 9px; }
+          .mn-billing-toggle { margin-bottom: 32px; }
+          .mn-billing-opt { padding: 7px 16px; font-size: 12px; }
+          .mn-faq { padding: 48px 4%; }
+          .mn-faq-q { padding: 16px 18px; }
+          .mn-faq-q-text { font-size: 13.5px; }
+          .mn-faq-a { font-size: 13px; padding: 0 18px 16px; }
+          .mn-faq-chevron { width: 24px; height: 24px; }
+          .mn-faq-list { gap: 10px; margin-top: 36px; }
+          .mn-cta { padding: 40px 4%; }
+          .mn-cta h2 { font-size: clamp(22px, 5vw, 34px); }
+          .mn-cta-sub { font-size: 14px; margin-bottom: 24px; }
+          .mn-btn-cta-primary { padding: 9px 20px; font-size: 13px; }
+          .mn-btn-cta-outline { padding: 8px 20px; font-size: 13px; }
+          .mn-cta-badge { font-size: 11px; padding: 4px 12px; }
+          .mn-footer { padding: 48px 4% 24px; }
+          .mn-footer-brand p { font-size: 12.5px; }
+          .mn-footer-col-title { font-size: 12px; margin-bottom: 14px; }
+          .mn-footer-links a { font-size: 12.5px; }
+          .mn-footer-copy { font-size: 11.5px; }
+          .mn-footer-legal a { font-size: 11.5px; }
+          .mn-trusted { padding: 28px 4%; }
+          .mn-trusted-label { font-size: 10.5px; margin-bottom: 16px; }
+          .mn-trusted-logos { gap: 12px; }
+          .mn-trusted-logo { font-size: 11.5px; padding: 6px 14px; }
+          .mn-section-title { font-size: clamp(22px, 4.5vw, 28px); }
+          .mn-section-sub { font-size: 13px; margin-bottom: 32px; }
+          .mn-section-tag { font-size: 10px; padding: 4px 10px; gap: 4px; }
+          .mn-demo-modal { padding: 24px; border-radius: 16px; }
+          .mn-demo-modal h3 { font-size: 18px; }
+          .mn-demo-modal p { font-size: 13px; margin-bottom: 18px; }
+          .mn-demo-form-row { grid-template-columns: 1fr; gap: 12px; }
+          .mn-demo-form-group label { font-size: 11px; }
+          .mn-demo-form-group input { padding: 8px 12px; font-size: 13px; }
+          .mn-demo-submit { padding: 10px; font-size: 14px; }
+          .mn-mobile-menu { top: 60px; padding: 16px; gap: 12px; }
+          .mn-mobile-menu a { font-size: 13.5px; padding: 6px 0; }
+        }
+
+        /* ══════════════════════════════════════
+           RESPONSIVE – SMALL MOBILE (≤420px)
+           ══════════════════════════════════════ */
+        @media (max-width: 420px) {
+          .mn-nav-inner { padding: 14px 0; }
+          .mn-nav { padding: 0 4%; }
+          .mn-hero { padding: 74px 3.5% 0; padding-bottom: 0; }
+          .mn-hero h1 { font-size: 21px; line-height: 1.18; letter-spacing: -0.015em; }
+          .mn-hero-sub { font-size: 11.5px; line-height: 1.55; max-width: 280px; margin-bottom: 14px; }
+          .mn-hero-badge { font-size: 9px; padding: 3px 9px; margin-bottom: 12px; }
+          .mn-hero-actions { flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 260px; margin: 0 auto; }
+          .mn-btn-hero-primary { padding: 9px 22px; font-size: 12px; width: 100%; justify-content: center; }
+          .mn-btn-free-trial { padding: 7px 18px; font-size: 10.5px; width: 100%; justify-content: center; }
+          .mn-hero-dash-area { margin-top: 16px; transform: scale(0.82); transform-origin: top center; margin-bottom: -40px; }
+          .mn-hero-decos { display: none; }
+          .mn-dash-body { min-height: 160px; max-height: 190px; overflow: hidden; grid-template-columns: 100%; }
+          .mn-dash-sidebar { display: none; }
+          .mn-dash-right { display: none; }
+          .mn-dash-main { border-right: none; }
+          .mn-dash-nav-item { font-size: 8.5px; padding: 4px 8px; gap: 4px; }
+          .mn-dash-sidebar-gen { font-size: 6px; padding: 8px 8px 3px; }
+          .mn-dash-pg-title { font-size: 11px; }
+          .mn-dash-pg-sub { font-size: 7px; }
+          .mn-dash-kpi-row { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+          .mn-dash-kpi-num { font-size: 13px; }
+          .mn-dash-kpi-lbl { font-size: 6px; }
+          .mn-dash-kpi-card { padding: 6px; }
+          .mn-dash-kpi-icon { width: 18px; height: 18px; margin-bottom: 3px; }
+          .mn-dash-kpi-sub2 { font-size: 6px; }
+          .mn-dash-mstat-lbl { font-size: 6px; }
+          .mn-dash-mstat-val { font-size: 11px; }
+          .mn-dash-chart-hd { font-size: 8px; }
+          .mn-dash-chart-sub { font-size: 7px; }
+          .mn-dash-cal-month { font-size: 10px; }
+          .mn-dash-cal-c { font-size: 7px; }
+          .mn-dash-alert-ttl { font-size: 7.5px; }
+          .mn-dash-alert-go { font-size: 6.5px; }
+          .mn-dash-duty-nm { font-size: 8px; }
+          .mn-dash-duty-dp { font-size: 6.5px; }
+          .mn-dash-duty-av { width: 18px; height: 18px; font-size: 6px; }
+          .mn-dash-r-sec { font-size: 7px; }
+          .mn-dash-refresh-btn { font-size: 8px; }
+          .mn-solutions { padding: 40px 3.5%; }
+          .mn-solutions-hd { margin-bottom: 24px; }
+          .mn-solutions-hd-title { font-size: 21px; margin-bottom: 10px; }
+          .mn-solutions-hd-sub { font-size: 12px; }
+          .mn-sol-card-content { padding: 20px 16px 0; }
+          .mn-sol-card-h { font-size: 16px; }
+          .mn-sol-feat { font-size: 11.5px; gap: 8px; }
+          .mn-sol-feat-check { width: 16px; height: 16px; }
+          .mn-sol-pill { font-size: 10px; padding: 3px 10px; margin-bottom: 16px; }
+          .mn-sol-arrow-btn { width: 34px; height: 34px; }
+          .mn-sol-card-mock { margin-top: 20px; height: 140px; }
+          .mn-sol-big-grid { gap: 16px; }
+          .mn-ai-rx { padding: 40px 3.5%; }
+          .mn-ai-rx-badge { font-size: 10px; padding: 5px 12px; letter-spacing: 0.06em; }
+          .mn-ai-rx-title { font-size: 22px; margin-bottom: 10px; }
+          .mn-ai-rx-sub { font-size: 13px; }
+          .mn-ai-tab { padding: 10px 14px; font-size: 12px; gap: 6px; }
+          .mn-ai-info-h { font-size: 19px; }
+          .mn-ai-info-p { font-size: 12px; margin-bottom: 22px; }
+          .mn-ai-benefit { padding: 10px 12px; gap: 10px; border-radius: 12px; }
+          .mn-ai-benefit-icon { width: 30px; height: 30px; border-radius: 9px; }
+          .mn-ai-benefit-title { font-size: 12px; }
+          .mn-ai-benefit-desc { font-size: 11px; }
+          .mn-ai-stat-num { font-size: 20px; }
+          .mn-ai-stat-lbl { font-size: 10px; }
+          .mn-ai-mock-body { padding: 16px 14px; }
+          .mn-rx-pat-name { font-size: 12px; }
+          .mn-rx-pat-sub { font-size: 10px; }
+          .mn-rx-pat-badge { font-size: 9px; padding: 2px 7px; }
+          .mn-rx-pat-av { width: 28px; height: 28px; font-size: 10px; }
+          .mn-rx-diag-chip { font-size: 10px; padding: 3px 9px; }
+          .mn-rx-med-name { font-size: 11px; }
+          .mn-rx-med-dose { font-size: 9px; }
+          .mn-vr-ext-label { font-size: 9px; min-width: 65px; }
+          .mn-vr-ext-val { font-size: 11px; }
+          .mn-vr-text { font-size: 11px; }
+          .mn-vr-btn { font-size: 11px; padding: 8px; }
+          .mn-why { padding: 32px 3.5%; }
+          .mn-why-container { padding: 24px 14px 20px; border-radius: 18px; }
+          .mn-why-hd { margin-bottom: 24px; }
+          .mn-why-hd-title { font-size: 19px; }
+          .mn-why-hd-sub { font-size: 11.5px; }
+          .mn-why-card { padding: 16px 14px; border-radius: 12px; }
+          .mn-why-icon { width: 28px; height: 28px; border-radius: 7px; margin-bottom: 10px; }
+          .mn-why-title { font-size: 12px; margin-bottom: 5px; }
+          .mn-why-desc { font-size: 10.5px; line-height: 1.6; }
+          .mn-why-grid-top { gap: 10px; margin-bottom: 10px; }
+          .mn-why-grid-bot { gap: 10px; }
+          .mn-how { padding: 40px 3.5%; }
+          .mn-how-step-num { font-size: 32px; margin-bottom: 8px; }
+          .mn-how-step-icon { width: 44px; height: 44px; border-radius: 12px; margin-bottom: 14px; }
+          .mn-how-step-title { font-size: 14px; margin-bottom: 6px; }
+          .mn-how-step-desc { font-size: 11.5px; }
+          .mn-how-steps { gap: 20px; margin-top: 28px; }
+          .mn-testi { padding: 40px 3.5%; }
+          .mn-testi-card { padding: 18px; border-radius: 14px; }
+          .mn-testi-text { font-size: 12px; line-height: 1.7; margin-bottom: 14px; }
+          .mn-testi-avatar { width: 32px; height: 32px; font-size: 11px; }
+          .mn-testi-name { font-size: 12px; }
+          .mn-testi-role { font-size: 10px; }
+          .mn-star { font-size: 13px; }
+          .mn-testi-grid { gap: 14px; margin-top: 28px; }
+          .mn-pricing { padding: 40px 3.5%; }
+          .mn-pricing-grid { gap: 14px; }
+          .mn-price-card { padding: 20px 16px; border-radius: 14px; }
+          .mn-price-name { font-size: 16px; }
+          .mn-price-num { font-size: 28px; }
+          .mn-price-currency { font-size: 16px; }
+          .mn-price-per { font-size: 12px; }
+          .mn-price-desc { font-size: 11px; margin-bottom: 16px; }
+          .mn-price-feature { font-size: 11px; gap: 7px; }
+          .mn-price-check { width: 15px; height: 15px; font-size: 8px; }
+          .mn-price-features { gap: 8px; }
+          .mn-price-web-toggle { font-size: 11px; padding: 9px 10px; }
+          .mn-price-web-tag { font-size: 8px; padding: 2px 6px; }
+          .mn-price-web-item { font-size: 11px; }
+          .mn-price-web-dot { width: 15px; height: 15px; font-size: 8px; }
+          .mn-billing-toggle { margin-bottom: 28px; }
+          .mn-billing-opt { padding: 6px 14px; font-size: 11px; }
+          .mn-billing-save { font-size: 9px; padding: 2px 5px; }
+          .mn-price-period-note { font-size: 11px; }
+          .mn-price-note { font-size: 10px; }
+          .mn-faq { padding: 40px 3.5%; }
+          .mn-faq-q { padding: 14px; }
+          .mn-faq-q-text { font-size: 12.5px; }
+          .mn-faq-a { font-size: 12px; padding: 0 14px 14px; line-height: 1.7; }
+          .mn-faq-chevron { width: 22px; height: 22px; border-radius: 6px; }
+          .mn-faq-list { gap: 8px; margin-top: 28px; }
+          .mn-faq-item { border-radius: 12px; }
+          .mn-cta { padding: 36px 3.5%; }
+          .mn-cta h2 { font-size: 21px; margin-bottom: 10px; }
+          .mn-cta-sub { font-size: 12.5px; margin-bottom: 20px; }
+          .mn-cta-badge { font-size: 10px; padding: 3px 10px; margin-bottom: 14px; }
+          .mn-cta-icon { width: 44px; height: 44px; }
+          .mn-btn-cta-primary { padding: 9px 20px; font-size: 12px; }
+          .mn-btn-cta-outline { padding: 8px 18px; font-size: 12px; }
+          .mn-cta-actions { flex-direction: column; align-items: center; width: 100%; max-width: 260px; margin: 0 auto; }
+          .mn-cta-actions > * { width: 100%; text-align: center; display: flex; justify-content: center; }
+          .mn-footer { padding: 36px 3.5% 18px; }
+          .mn-footer-top { gap: 24px; margin-bottom: 28px; }
+          .mn-footer-brand p { font-size: 12px; max-width: 100%; }
+          .mn-footer-col-title { font-size: 11px; margin-bottom: 10px; }
+          .mn-footer-links { gap: 8px; }
+          .mn-footer-links a { font-size: 12px; }
+          .mn-footer-copy { font-size: 10.5px; }
+          .mn-footer-legal a { font-size: 10.5px; }
+          .mn-footer-legal { gap: 14px; }
+          .mn-trusted { padding: 20px 3.5%; }
+          .mn-trusted-label { font-size: 9.5px; margin-bottom: 12px; letter-spacing: 0.08em; }
+          .mn-trusted-logos { gap: 7px; }
+          .mn-trusted-logo { font-size: 10px; padding: 5px 10px; border-width: 1px; border-radius: 6px; }
+          .mn-section-title { font-size: 21px; margin-bottom: 8px; }
+          .mn-section-sub { font-size: 12px; margin-bottom: 24px; line-height: 1.6; }
+          .mn-section-tag { font-size: 9px; padding: 3px 9px; gap: 4px; }
+          .mn-demo-modal { padding: 18px; border-radius: 14px; max-height: 90vh; overflow-y: auto; }
+          .mn-demo-modal h3 { font-size: 16px; }
+          .mn-demo-modal p { font-size: 12px; margin-bottom: 14px; }
+          .mn-demo-form { gap: 10px; }
+          .mn-demo-form-group label { font-size: 10px; }
+          .mn-demo-form-group input { padding: 7px 10px; font-size: 12px; border-radius: 8px; }
+          .mn-demo-submit { padding: 9px; font-size: 13px; border-radius: 8px; }
+          .mn-demo-close { width: 26px; height: 26px; top: 12px; right: 12px; }
+          .mn-mobile-menu { top: 56px; padding: 14px; gap: 10px; }
+          .mn-mobile-menu a { font-size: 13px; padding: 5px 0; }
+          .mn-mobile-menu .mn-btn-primary, .mn-mobile-menu .mn-btn-ghost { padding: 10px; font-size: 12px; }
+          .mn-logo img { height: 30px !important; }
+          .mn-nav-inner { padding: 12px 0; }
+        }
       ` }} />
 
       {/* NAVBAR */}
       <nav className={`mn-nav${scrolled ? " scrolled" : ""}`}>
         <div className="mn-nav-inner">
           <Link href="/" className="mn-logo">
-            <img src="/logo/medinexplus-logo-normal.png" alt="MediNexPlus" style={{ height: 38, width: "auto", objectFit: "contain" }} />
+            <img src="/logo/medinexplus-logo-normal.png" alt="MediNexPlus" className="mn-logo-img" style={{ height: 38, width: "auto", objectFit: "contain" }} />
           </Link>
 
           <div className="mn-nav-links">
@@ -1702,7 +2054,7 @@ export default function MediNexLanding() {
           </div>
           <div className="mn-footer-divider" />
           <div className="mn-footer-bottom">
-            <p className="mn-footer-copy">© {new Date().getFullYear()} MediNex+. All rights reserved.</p>
+            <p className="mn-footer-copy">© {new Date().getFullYear()} MediNex+. All rights reserved. | Product By <a href="https://theblueintellect.com/" target="_blank" rel="noopener noreferrer" style={{ color: '#A78BFA', textDecoration: 'none', fontWeight: 600 }}>The Blue Intellect</a></p>
             <div className="mn-footer-legal">
               <Link href="/privacy-policy">Privacy</Link>
               <Link href="/terms-of-service">Terms</Link>

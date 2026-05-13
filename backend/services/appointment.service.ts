@@ -120,32 +120,33 @@ export const bookAppointment = async (
     },
   });
 
-  // Send confirmation email — fully fire-and-forget (no await)
+  // Send confirmation email — awaited to ensure delivery in serverless environments
+  // (fire-and-forget is unreliable on Vercel as the execution context is killed after response)
   if (patient.email) {
     const deptName = (appointment as any).department?.name || "General";
-    (async () => {
-      try {
-        const settings = await getSettings(hospitalId);
-        await sendAppointmentConfirmation({
-          to: patient.email!,
-          patientName: patient.name,
-          patientId: patient.patientId,
-          doctorName: doctor?.name || "Our Team",
-          departmentName: deptName,
-          appointmentDate: appointmentDate.toLocaleDateString("en-IN", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }),
-          timeSlot: input.timeSlot || "To be confirmed",
-          tokenNumber,
-          type: input.type || "OPD",
-          hospitalName,
-          hospitalLogo: settings?.logo || null,
-        });
-      } catch { /* ignore email failures */ }
-    })();
+    try {
+      const settings = await getSettings(hospitalId);
+      await sendAppointmentConfirmation({
+        to: patient.email!,
+        patientName: patient.name,
+        patientId: patient.patientId,
+        doctorName: doctor?.name || "Our Team",
+        departmentName: deptName,
+        appointmentDate: appointmentDate.toLocaleDateString("en-IN", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+        timeSlot: input.timeSlot || "To be confirmed",
+        tokenNumber,
+        type: input.type || "OPD",
+        hospitalName,
+        hospitalLogo: settings?.logo || null,
+      });
+    } catch (emailErr: any) {
+      console.error("[Email] Failed to send appointment confirmation:", emailErr?.message);
+    }
   }
 
   return appointment;
