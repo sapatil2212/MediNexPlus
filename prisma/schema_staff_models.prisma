@@ -1,0 +1,79 @@
+// Add these models to the end of schema.prisma before the enums section
+
+model StaffAttendance {
+  id         String   @id @default(uuid())
+  hospitalId String
+  staffId    String
+  date       DateTime @db.Date
+  inTime     String?
+  outTime    String?
+  status     String   @default("PRESENT")
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  staff      Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  hospital   Hospital @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+
+  @@unique([hospitalId, staffId, date])
+  @@index([hospitalId])
+  @@index([staffId])
+  @@index([date])
+}
+
+model StaffSalaryStructure {
+  id                   String  @id @default(uuid())
+  hospitalId           String
+  staffId              String  @unique
+  basic                Float   @default(0)
+  hra                  Float   @default(0)
+  conveyanceAllowance  Float   @default(0)
+  medicalAllowance     Float   @default(0)
+  specialAllowance     Float   @default(0)
+  otherEarnings        String? @db.Text
+  professionTax        Float   @default(0)
+  providentFund        Float   @default(0)
+  labourWelfareFund    Float   @default(0)
+  incomeTax            Float   @default(0)
+  otherDeductions      String? @db.Text
+  employerEps          Float   @default(0)
+  employerPf           Float   @default(0)
+  employerNps          Float   @default(0)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  staff                Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  hospital             Hospital @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+
+  @@index([hospitalId])
+}
+
+model StaffPayslip {
+  id              String   @id @default(uuid())
+  hospitalId      String
+  staffId         String
+  month           Int
+  year            Int
+  totalDays       Int      @default(0)
+  presentDays     Float    @default(0)
+  lopDays         Float    @default(0)
+  grossEarnings   Float    @default(0)
+  grossDeductions Float    @default(0)
+  netPay          Float    @default(0)
+  totalCtc        Float    @default(0)
+  details         String?  @db.Text
+  status          String   @default("DRAFT")
+  generatedAt     DateTime @default(now())
+  emailSentAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  staff           Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  hospital        Hospital @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+
+  @@unique([hospitalId, staffId, month, year])
+  @@index([hospitalId])
+  @@index([staffId])
+}
+
+// Also add these reverse relations to the Hospital model:
+// staffAttendance       StaffAttendance[]
+// staffSalaryStructures StaffSalaryStructure[]
+// staffPayslips         StaffPayslip[]

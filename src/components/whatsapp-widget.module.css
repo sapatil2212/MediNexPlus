@@ -1,0 +1,74 @@
+.whatsappWidget {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 60px;
+  height: 60px;
+  background-color: #25d366; /* WhatsApp green */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+}
+
+.whatsappLogo {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.whatsappWidget:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.whatsappWidget:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-10px);
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tooltip {
+  position: absolute;
+  right: 100%;
+  background: #333;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+/* Adjust for mobile view when the bottom sticky bar is visible */
+@media (max-width: 768px) {
+  .whatsappWidget {
+    right: 12px;
+    bottom: 54px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .whatsappLogo {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  .whatsappWidget:hover .tooltip {
+    display: none;
+  }
+}

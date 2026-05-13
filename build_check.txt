@@ -1,0 +1,78 @@
+﻿  Γû▓ Next.js 14.2.29
+  - Environments: .env
+
+   Creating an optimized production build ...
+npx :  ΓÜá Compiled with warnings
+At line:1 char:77
++ ... l Management System\healthcare-landing" ; npx 
+next build 2>&1 | Out-F ...
++                                               
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( ΓÜá 
+Compiled with warnings:Stri    ng) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+./node_modules/jose/dist/webapi/lib/deflate.js
+A Node.js API is used (CompressionStream at line: 10) 
+which is not supported in the Edge Runtime.
+Learn more: 
+https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/jose/dist/webapi/lib/deflate.js
+./node_modules/jose/dist/webapi/jwe/flattened/encrypt.j
+s
+./node_modules/jose/dist/webapi/index.js
+
+./node_modules/jose/dist/webapi/lib/deflate.js
+A Node.js API is used (DecompressionStream at line: 
+26) which is not supported in the Edge Runtime.
+Learn more: 
+https://nextjs.org/docs/api-reference/edge-runtime
+
+Import trace for requested module:
+./node_modules/jose/dist/webapi/lib/deflate.js
+./node_modules/jose/dist/webapi/jwe/flattened/encrypt.j
+s
+./node_modules/jose/dist/webapi/index.js
+
+ Γ£ô Compiled successfully
+   Linting and checking validity of types ...
+ Γ¿» ESLint: Invalid Options: - Unknown options: 
+useEslintrc, extensions - 'extensions' has been 
+removed.
+Failed to compile.
+
+./src/app/hospitaladmin/dashboard/page.tsx:400:115
+Type error: Unexpected token. Did you mean `{'>'}` or 
+`&gt;`?
+
+[0m [90m 398 |[39m                         
+[33m<[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m 399 |[39m                           
+[33m<[39m[33mdiv[39m 
+className[33m=[39m[32m"hd-ri-msg"[39m 
+style[33m=[39m{{ color[33m:[39m [32m"#fff"[39m }}
+[33m>[39m{dashboardData[33m.[39minventory[33m.[39
+mlowStockCount} inventory items below minimum stock 
+level[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m[31m[1m>[22m[39m[90m 400 |[39m               
+            [33m<[39m[33mdiv[39m 
+className[33m=[39m[32m"hd-ri-time"[39m 
+style[33m=[39m{{ color[33m:[39m 
+[32m"rgba(255,255,255,0.7)"[39m 
+}}[33m>[39m[33mGo[39m to [33mInventory[39m 
+[33m-[39m[33m>[39m [33mCheck[39m 
+stock[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m     |[39m                                  
+                                                       
+                          [31m[1m^[22m[39m[0m
+[0m [90m 401 |[39m                         
+[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m 402 |[39m                       
+[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+[0m [90m 403 |[39m                     
+[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+Next.js build worker exited with code: 1 and signal: 
+null

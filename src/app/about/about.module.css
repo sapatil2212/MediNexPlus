@@ -1,0 +1,515 @@
+/* Hide about hero banner on mobile */
+.heroWrapper {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .heroWrapper {
+    display: none;
+  }
+}
+
+.pageHero {
+  background: linear-gradient(135deg, var(--bg-blue) 0%, #f0f7ff 50%, var(--white) 100%);
+  padding: var(--space-24) 0 var(--space-20);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pageHero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--primary-100), transparent);
+}
+
+.heroContent { 
+  max-width: 800px; 
+  margin: 0 auto; 
+  position: relative;
+  z-index: 2;
+}
+
+.heroTitle { 
+  font-size: clamp(2.5rem, 5vw, 4rem); 
+  font-weight: 900; 
+  color: var(--gray-900); 
+  line-height: 1.1; 
+  margin-bottom: var(--space-6); 
+  letter-spacing: -0.04em; 
+}
+
+.accent { 
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent; 
+  background-clip: text; 
+}
+
+.heroSubtext { 
+  font-size: var(--font-size-xl); 
+  color: var(--gray-600); 
+  line-height: 1.6; 
+  max-width: 680px; 
+  margin: 0 auto;
+  font-weight: 500;
+}
+
+.section { padding: var(--space-16) 0; }
+.sectionHeader { text-align: center; margin-bottom: var(--space-12); }
+
+/* Mission / Philosophy */
+.missionGrid { 
+  display: grid; 
+  grid-template-columns: 1.1fr 0.9fr; 
+  gap: var(--space-16); 
+  align-items: center; 
+}
+
+.imageWrapper {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-2xl);
+}
+
+.imageWrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-2xl);
+  pointer-events: none;
+}
+
+.image { 
+  width: 100%; 
+  height: auto; 
+  object-fit: cover; 
+  transition: transform var(--transition-slow);
+}
+
+.imageWrapper:hover .image {
+  transform: scale(1.05);
+}
+
+.missionContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.missionText { 
+  font-size: var(--font-size-lg); 
+  color: var(--gray-600); 
+  line-height: 1.8; 
+}
+
+.checkList { 
+  display: flex; 
+  flex-direction: column; 
+  gap: var(--space-4); 
+}
+
+.checkItem { 
+  display: flex; 
+  align-items: flex-start; 
+  gap: var(--space-4); 
+  font-size: var(--font-size-base); 
+  color: var(--gray-700); 
+  font-weight: 500;
+}
+
+.checkIconWrapper {
+  width: 24px;
+  height: 24px;
+  background: var(--primary-50);
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Doctors Section */
+.doctorsSection {
+  padding: var(--space-16) 0;
+  background: linear-gradient(180deg, #f8faff 0%, var(--white) 100%);
+}
+
+.doctorsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-10);
+}
+
+.doctorCard {
+  background: var(--white);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  display: flex;
+  flex-direction: row;
+  min-height: 380px;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.doctorCard:hover {
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-4px);
+}
+
+/* Left Side - Image */
+.doctorImageWrapper {
+  position: relative;
+  width: 320px;
+  min-width: 320px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: var(--space-6) var(--space-6) 0;
+  overflow: hidden;
+}
+
+.doctorImageInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.doctorImage {
+  width: 100%;
+  height: auto;
+  max-height: 380px;
+  object-fit: contain;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.verifiedBadge {
+  position: absolute;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  width: 32px;
+  height: 32px;
+  background: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  z-index: 10;
+}
+
+/* Right Side - Content */
+.doctorContent {
+  padding: var(--space-8);
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.doctorName {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: var(--space-1);
+  letter-spacing: -0.02em;
+}
+
+.doctorSpecialty {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+}
+
+.doctorMeta {
+  display: flex;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.experienceBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  letter-spacing: 0.02em;
+}
+
+.qualificationBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  background: rgba(14, 137, 143, 0.1);
+  color: #0E898F;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+}
+
+.expertiseList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.expertiseItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--gray-600);
+  line-height: 1.4;
+}
+
+.expertiseItem svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Why Stand Apart / Values */
+.valuesSection { 
+  padding: var(--space-16) 0; 
+  background: var(--white); 
+}
+
+.valuesSection :global(.section-title) {
+  margin-bottom: var(--space-2);
+}
+
+.valuesSubtitle {
+  margin-top: 0;
+}
+
+.valuesGrid { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: var(--space-8); 
+}
+
+.valueCard { 
+  background: var(--white); 
+  border-radius: var(--radius-2xl); 
+  overflow: hidden;
+  padding: 0;
+  box-shadow: var(--shadow-md); 
+  transition: all var(--transition-base); 
+  border: 1px solid var(--gray-50);
+}
+
+.valueCard:hover {
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary-100);
+  transform: translateY(-6px);
+}
+
+.valueImageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.valueImage {
+  object-fit: cover;
+  object-position: center;
+  transition: transform var(--transition-base);
+}
+
+.valueCard:hover .valueImage {
+  transform: scale(1.04);
+}
+
+.valueContent {
+  padding: var(--space-6);
+}
+
+.valueTitle { 
+  font-size: var(--font-size-lg); 
+  font-weight: 800; 
+  color: var(--gray-900); 
+  margin-bottom: var(--space-2); 
+}
+
+.valueDesc { 
+  font-size: var(--font-size-sm); 
+  color: var(--gray-600); 
+  line-height: 1.6; 
+}
+
+/* Infrastructure */
+.infraSection {
+  padding: var(--space-16) 0;
+  background: var(--bg-light);
+}
+
+.infraHeader {
+  text-align: center;
+  margin-bottom: var(--space-12);
+}
+
+.infraSubtext {
+  font-size: var(--font-size-lg);
+  color: var(--gray-600);
+  max-width: 680px;
+  margin: var(--space-4) auto 0;
+  font-weight: 500;
+}
+
+.infraGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+.infraItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--white);
+  padding: var(--space-6) var(--space-8);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-50);
+  font-size: var(--font-size-base);
+  color: var(--gray-800);
+  font-weight: 600;
+  transition: all var(--transition-base);
+}
+
+.infraItem:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-100);
+  transform: translateX(8px);
+}
+
+.infraIcon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .missionGrid { grid-template-columns: 1fr; gap: var(--space-10); }
+  .valuesGrid { grid-template-columns: repeat(2, 1fr); }
+  .doctorsGrid { grid-template-columns: 1fr; }
+  .doctorCard {
+    flex-direction: row;
+    min-height: 340px;
+  }
+  .doctorImageWrapper {
+    width: 260px;
+    min-width: 260px;
+  }
+  .infraGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .heroTitle { font-size: 2.5rem; }
+  .heroSubtext { font-size: var(--font-size-sm); }
+  .missionText { font-size: var(--font-size-sm); }
+  .valueDesc { font-size: var(--font-size-sm); }
+  .infraSubtext { font-size: var(--font-size-sm); }
+  .sectionHeader :global(.section-subtitle),
+  .infraHeader :global(.section-subtitle) { font-size: var(--font-size-sm); }
+  .valuesGrid { grid-template-columns: 1fr; }
+  .infraGrid { grid-template-columns: 1fr; }
+  .section { padding: var(--space-16) 0; }
+
+  /* Change to column layout on mobile to make images bigger */
+  .doctorCard {
+    flex-direction: column;
+    min-height: auto;
+  }
+  .doctorImageWrapper {
+    width: 100%;
+    min-width: 100%;
+    height: 320px;
+    min-height: 320px;
+    padding: var(--space-4) var(--space-4) 0;
+    flex-shrink: 0;
+  }
+  .doctorImage {
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+    object-position: bottom;
+  }
+  .doctorContent {
+    padding: var(--space-6) var(--space-5);
+    flex: 1;
+    text-align: center;
+    align-items: center;
+  }
+  .doctorName {
+    font-size: var(--font-size-lg);
+    margin-bottom: 4px;
+  }
+  .doctorSpecialty {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-4);
+  }
+  .doctorMeta {
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    justify-content: center;
+  }
+  .experienceBadge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+  .qualificationBadge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+  .expertiseList {
+    gap: 5px;
+    text-align: left;
+    width: 100%;
+  }
+  .expertiseItem {
+    font-size: 11px;
+    gap: 6px;
+    line-height: 1.4;
+  }
+  .expertiseItem svg {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 400px) {
+  .doctorImageWrapper {
+    width: 35%;
+    min-width: 95px;
+  }
+  .doctorName {
+    font-size: 12px;
+  }
+  .expertiseItem {
+    font-size: 9.5px;
+  }
+}

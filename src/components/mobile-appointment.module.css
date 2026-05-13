@@ -1,0 +1,71 @@
+.mobileContainer {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 8px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  z-index: 999;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+}
+
+.appointmentButton,
+.contactButton {
+  flex: 1;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: none;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.appointmentButton {
+  background: #0E898F; /* Primary clinic color */
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(14, 137, 143, 0.2);
+}
+
+.contactButton {
+  background: #ffffff;
+  color: #0E898F;
+  border: 1px solid rgba(14, 137, 143, 0.2);
+}
+
+.appointmentButton:active,
+.contactButton:active {
+  transform: scale(0.98);
+}
+
+.appointmentButton:active {
+  background: #0b7176;
+}
+
+.contactButton:active {
+  background: #f0f9fa;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+/* Show only on mobile devices */
+@media (max-width: 768px) {
+  .mobileContainer {
+    display: block;
+  }
+}

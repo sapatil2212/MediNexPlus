@@ -1,0 +1,202 @@
+.newsletterSection {
+  padding: var(--space-16) var(--space-6);
+  background-color: var(--bg-light);
+  overflow: visible; /* To allow image to pop out from container */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--primary);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8) var(--space-12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: visible; /* To allow image to pop out */
+  min-height: 280px;
+}
+
+.content {
+  flex: 1;
+  max-width: 65%;
+  color: var(--white);
+  z-index: 2;
+}
+
+.title {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-6);
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: var(--space-4);
+  max-width: 500px;
+}
+
+.button,
+.secondaryButton {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-8);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-size: var(--font-size-base);
+  text-decoration: none;
+  min-width: 180px;
+}
+
+.button {
+  background-color: var(--white);
+  color: var(--primary);
+  border: none;
+  gap: var(--space-2);
+}
+
+.secondaryButton {
+  background-color: transparent;
+  color: var(--white);
+  border: 1px solid var(--white);
+}
+
+.button:hover,
+.secondaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.secondaryButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.button:hover .buttonIcon {
+  transform: translateX(4px);
+}
+
+.buttonIcon {
+  transition: transform 0.3s ease;
+}
+
+.imageWrapper {
+  position: absolute;
+  right: var(--space-12);
+  bottom: 0;
+  width: 30%;
+  height: 115%; /* Pop out of the top */
+  display: flex;
+  align-items: flex-end;
+  z-index: 1;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .container {
+    padding: var(--space-10) var(--space-8);
+  }
+  .title {
+    font-size: var(--font-size-3xl);
+  }
+  .imageWrapper {
+    width: 40%;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-8) var(--space-6) 0;
+    overflow: hidden; /* Hide overflow on mobile for simplicity */
+    min-height: auto;
+  }
+  .content {
+    max-width: 100%;
+    margin-bottom: var(--space-4);
+  }
+  .title {
+    font-size: var(--font-size-xl);
+  }
+  .subtitle {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--space-4);
+    line-height: 1.5;
+  }
+  .ctaButtons {
+    flex-direction: column;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+  }
+  .button,
+  .secondaryButton {
+    padding: var(--space-2) var(--space-5);
+    font-size: var(--font-size-xs);
+    width: 100%;
+    min-width: 0;
+    white-space: nowrap;
+  }
+  .imageWrapper {
+    position: relative;
+    right: 0;
+    width: 55%;
+    height: auto;
+    margin: 0 auto;
+    margin-top: var(--space-2);
+    margin-bottom: 0;
+  }
+  .image {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .newsletterSection {
+    padding: var(--space-8) var(--space-4);
+  }
+  .container {
+    padding: var(--space-6) var(--space-4) 0;
+    border-radius: var(--radius-xl);
+  }
+  .title {
+    font-size: var(--font-size-lg);
+  }
+  .ctaButtons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .button,
+  .secondaryButton {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-xs);
+    justify-content: center;
+    width: 100%;
+  }
+  .imageWrapper {
+    width: 65%;
+  }
+}

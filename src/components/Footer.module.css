@@ -1,0 +1,242 @@
+.footer {
+  background: var(--gray-900);
+  color: var(--gray-300);
+  position: relative;
+}
+
+/* Footer Content */
+.footerContent {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+  gap: var(--space-10);
+  padding: var(--space-20) 0 var(--space-12);
+}
+
+.footerNoNewsletter {
+  padding-top: var(--space-16);
+}
+
+/* Footer Logo */
+.footerLogo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  margin-bottom: var(--space-4);
+}
+
+.logoIcon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoText {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--white);
+}
+
+.logoAccent {
+  color: var(--primary-light);
+}
+
+.footerLogoImage {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+}
+
+.footerAbout {
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+  margin-bottom: var(--space-5);
+  color: var(--gray-400);
+}
+
+.footerTagline {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--space-3);
+}
+
+/* Social Links */
+.socialLinks {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.socialLink {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--gray-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-400);
+  transition: all var(--transition-base);
+}
+
+.socialLink:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+/* Columns */
+.footerCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.colTitle {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: var(--space-6);
+  position: relative;
+  padding-bottom: var(--space-3);
+}
+
+.colTitle::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 32px;
+  height: 2px;
+  background: var(--primary);
+  border-radius: var(--radius-full);
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footerLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--gray-400);
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.footerLink:hover {
+  color: var(--primary-light);
+  transform: translateX(4px);
+}
+
+/* Contact */
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.contactItem {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.contactIcon {
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Bottom Bar */
+.bottomBar {
+  border-top: 1px solid var(--gray-800);
+  padding: var(--space-5) 0;
+}
+
+.bottomInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.copyright {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+}
+
+.bottomLinks {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.bottomLinks a {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.bottomLinks a:hover {
+  color: var(--primary-light);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .footerContent {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-8);
+  }
+
+  .newsletter {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .nlForm {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nlInput {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .footerContent {
+    grid-template-columns: 1fr;
+    padding-left: var(--space-4);
+  }
+
+  .newsletter {
+    padding: var(--space-6);
+  }
+
+  .bottomInner {
+    flex-direction: column;
+    gap: var(--space-4);
+    text-align: center;
+  }
+
+  .bottomLinks {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+  }
+}
+
+@media (max-width: 768px) {
+  .bottomBar {
+    padding-bottom: 60px;
+  }
+}

@@ -1,0 +1,348 @@
+/* ========================================
+   Mission Section Component Styles
+   ======================================== */
+
+.missionSection {
+  padding: var(--space-24) 0;
+  background: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+
+.missionContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-16);
+  align-items: center;
+}
+
+/* Left Side - Image Section */
+.imageSection {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+}
+
+.doctorImage {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+}
+
+/* Experience Badge */
+.expBadge {
+  position: absolute;
+  top: 50%;
+  right: -20px;
+  transform: translateY(-50%);
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  box-shadow: var(--shadow-xl);
+  z-index: 10;
+}
+
+.expIconWrapper {
+  width: 44px;
+  height: 44px;
+  background: var(--primary-50);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.expContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.expNumber {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--gray-900);
+  line-height: 1;
+}
+
+.expLabel {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+/* Team Image Overlay */
+.teamImageWrapper {
+  position: absolute;
+  bottom: 40px;
+  left: -20px;
+  width: 200px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  border: 4px solid var(--white);
+  z-index: 10;
+}
+
+.teamImage {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Right Side - Content Section */
+.contentSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.missionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--primary-50);
+  color: var(--primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.missionBadge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--primary);
+  border-radius: 50%;
+}
+
+.mainHeading {
+  font-size: var(--font-size-4xl);
+  font-weight: 800;
+  color: var(--gray-900);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.headingAccent {
+  color: var(--primary);
+}
+
+.descriptionWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 540px;
+}
+
+.descriptionText {
+  font-size: var(--font-size-lg);
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
+/* Standardized mobile font size for descriptive content */
+@media (max-width: 768px) {
+  .descriptionText {
+    font-size: var(--font-size-sm);
+  }
+  
+  .missionSection {
+    padding: var(--space-16) 0;
+  }
+}
+
+/* Features Grid */
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-1);
+}
+
+.featureCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+}
+
+.featureCard:hover {
+  border-color: var(--primary-100);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.featureIcon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featureIcon.diagnostics {
+  background: var(--primary-50);
+  color: var(--primary);
+}
+
+.featureIcon.availability {
+  background: var(--primary-50);
+  color: var(--primary);
+}
+
+.featureIcon.specialists {
+  background: var(--accent-purple-light);
+  color: var(--accent-purple);
+}
+
+.featureIcon.patientFocused {
+  background: var(--accent-pink-light);
+  color: var(--accent-pink);
+}
+
+.featureContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.featureTitle {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.featureDesc {
+  font-size: var(--font-size-xs);
+  color: var(--gray-400);
+  line-height: 1.4;
+}
+
+/* CTA Button */
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-8);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: var(--white);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  width: fit-content;
+  margin-top: var(--space-4);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-blue);
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-blue-lg);
+}
+
+.ctaButton svg {
+  transition: transform var(--transition-base);
+}
+
+.ctaButton:hover svg {
+  transform: translateX(4px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .missionContainer {
+    grid-template-columns: 1fr;
+    gap: var(--space-12);
+  }
+
+  .imageSection {
+    order: 1;
+    justify-content: center;
+  }
+
+  .contentSection {
+    order: 2;
+    text-align: left;
+  }
+
+  .imageWrapper {
+    max-width: 450px;
+    margin: 0 auto;
+  }
+
+  .expBadge {
+    right: 0;
+  }
+
+  .teamImageWrapper {
+    left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .missionSection {
+    padding: var(--space-16) 0;
+  }
+
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mainHeading {
+    font-size: var(--font-size-2xl);
+  }
+
+  .imageWrapper {
+    max-width: 350px;
+  }
+
+  .teamImageWrapper {
+    width: 160px;
+    bottom: 20px;
+  }
+
+  .expBadge {
+    right: -10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .expBadge {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .expIconWrapper {
+    width: 36px;
+    height: 36px;
+  }
+
+  .expNumber {
+    font-size: var(--font-size-xl);
+  }
+
+  .teamImageWrapper {
+    width: 140px;
+  }
+}

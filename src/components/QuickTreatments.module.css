@@ -1,0 +1,61 @@
+.section {
+  padding: 2.5rem 0 1.5rem; /* Increased top padding from 0 to 2.5rem */
+  background: #ffffff;
+}
+
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+.cardLink {
+  text-decoration: none;
+  display: block;
+}
+
+.card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 140px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.cardImage {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .cardsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .card {
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 0.75rem 0 1rem;
+  }
+
+  .cardsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .card {
+    height: 100px;
+    border-radius: 12px;
+  }
+}
