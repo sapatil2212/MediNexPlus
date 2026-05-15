@@ -22,6 +22,13 @@ export const getSuperAdminDashboardStats = async () => {
       mobile: true,
       isVerified: true,
       createdAt: true,
+      trialStartDate: true,
+      trialEndDate: true,
+      subscriptionStatus: true,
+      subscriptionPlan: true,
+      billingCycle: true,
+      subscriptionStartDate: true,
+      subscriptionEndDate: true,
       _count: {
         select: {
           patients: true,
@@ -29,6 +36,7 @@ export const getSuperAdminDashboardStats = async () => {
           staffMembers: true,
           appointments: true,
           departments: true,
+          subscriptionPayments: true,
         },
       },
     },
@@ -118,6 +126,14 @@ export const getSuperAdminDashboardStats = async () => {
     staff: h._count.staffMembers,
     appointments: h._count.appointments,
     departments: h._count.departments,
+    trialStartDate: h.trialStartDate,
+    trialEndDate: h.trialEndDate,
+    subscriptionStatus: h.subscriptionStatus,
+    subscriptionPlan: h.subscriptionPlan,
+    billingCycle: h.billingCycle,
+    subscriptionStartDate: h.subscriptionStartDate,
+    subscriptionEndDate: h.subscriptionEndDate,
+    paymentsCount: h._count.subscriptionPayments,
   }));
 
   return {

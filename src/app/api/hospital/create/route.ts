@@ -28,9 +28,16 @@ export async function POST(req: NextRequest) {
       return errorResponse("Validation Failed", 400, result.error.issues);
     }
 
+    const now = new Date();
+    const trialEnd = new Date(now);
+    trialEnd.setDate(trialEnd.getDate() + 14);
+
     const hospital = await createHospital({
       ...result.data,
       isVerified: true,
+      trialStartDate: now,
+      trialEndDate: trialEnd,
+      subscriptionStatus: "TRIAL",
     });
 
     return successResponse(hospital, "Hospital created successfully", 201);

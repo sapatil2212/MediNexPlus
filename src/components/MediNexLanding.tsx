@@ -244,14 +244,25 @@ export default function MediNexLanding() {
         .mn-btn-ghost:hover { background: ${PURPLE_50}; border-color: ${PURPLE}; }
         .mn-btn-primary { padding: 6px 18px; font-size: 13px; font-weight: 600; color: #fff; background: linear-gradient(135deg, ${PURPLE}, ${PURPLE_DARK}); border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; text-decoration: none; box-shadow: 0 2px 12px rgba(124,58,237,0.3); }
         .mn-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.4); }
-        .mn-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
-        .mn-burger span { display: block; width: 22px; height: 2px; background: ${DARK}; border-radius: 2px; transition: all 0.3s; }
+        .mn-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 8px; position: relative; z-index: 1001; }
+        .mn-burger span { display: block; width: 24px; height: 2.5px; background: ${DARK}; border-radius: 2px; transition: all 0.3s ease; }
+        .mn-burger.open span:nth-child(1) { transform: rotate(45deg) translateY(8px); }
+        .mn-burger.open span:nth-child(2) { opacity: 0; transform: translateX(-10px); }
+        .mn-burger.open span:nth-child(3) { transform: rotate(-45deg) translateY(-8px); }
+        .mn-mobile-menu-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(2px); z-index: 998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .mn-mobile-menu-backdrop.open { opacity: 1; pointer-events: auto; }
+        .mn-mobile-menu { display: none; }
         @media (max-width: 768px) {
           .mn-nav-links, .mn-nav-cta { display: none; }
           .mn-burger { display: flex; }
-          .mn-mobile-menu { position: fixed; top: 70px; left: 0; right: 0; background: #fff; padding: 20px 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); z-index: 999; display: flex; flex-direction: column; gap: 16px; border-top: 1px solid ${PURPLE_100}; }
-          .mn-mobile-menu a { font-size: 15px; font-weight: 500; color: ${DARK}; text-decoration: none; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
-          .mn-mobile-menu .mn-btn-primary, .mn-mobile-menu .mn-btn-ghost { width: 100%; text-align: center; padding: 12px; }
+          .mn-mobile-menu { position: fixed; top: 0; right: 0; bottom: 0; width: 300px; max-width: 80vw; background: #fff; padding: 80px 24px 24px; box-shadow: -8px 0 32px rgba(0,0,0,0.12); z-index: 1000; display: flex; flex-direction: column; gap: 8px; transform: translateX(100%); opacity: 0; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; }
+          .mn-mobile-menu.open { transform: translateX(0); opacity: 1; pointer-events: auto; }
+          .mn-mobile-menu a { font-size: 16px; font-weight: 500; color: ${DARK}; text-decoration: none; padding: 12px 16px; border-radius: 8px; transition: all 0.2s; }
+          .mn-mobile-menu a:hover { background: ${PURPLE_50}; color: ${PURPLE}; transform: translateX(4px); }
+          .mn-mobile-menu-divider { height: 1px; background: #E5E7EB; margin: 16px 0; }
+          .mn-mobile-menu-buttons { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+          .mn-mobile-menu .mn-btn-ghost { width: 100%; text-align: center; padding: 12px 16px; font-size: 14px; }
+          .mn-mobile-menu .mn-btn-free-trial { width: 100%; text-align: center; padding: 12px 16px; font-size: 14px; justify-content: center; }
         }
 
         /* HERO */
@@ -576,8 +587,8 @@ export default function MediNexLanding() {
         @keyframes scaleIn { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 
         /* FREE TRIAL BUTTON */
-        .mn-btn-free-trial { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 22px; font-size: 13px; font-weight: 600; color: #DC2626; background: transparent; border: 1.5px solid #DC2626; border-radius: 100px; cursor: pointer; text-decoration: none; position: relative; overflow: hidden; text-transform: lowercase; letter-spacing: 0.05em; transition: transform 0.2s; font-family: 'Inter', sans-serif; }
-        .mn-btn-free-trial:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(220, 38, 38, 0.15); }
+        .mn-btn-free-trial { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 22px; font-size: 13px; font-weight: 600; color: #fff; background: #DC2626; border: none; border-radius: 100px; cursor: pointer; text-decoration: none; position: relative; overflow: hidden; text-transform: lowercase; letter-spacing: 0.05em; transition: all 0.2s; font-family: 'Inter', sans-serif; box-shadow: 0 2px 12px rgba(220, 38, 38, 0.3); }
+        .mn-btn-free-trial:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4); background: #B91C1C; }
 
         /* FOOTER */
         .mn-footer { background: ${DARK}; padding: 72px 5% 32px; }
@@ -899,8 +910,8 @@ export default function MediNexLanding() {
           .mn-demo-form-group label { font-size: 11px; }
           .mn-demo-form-group input { padding: 8px 12px; font-size: 13px; }
           .mn-demo-submit { padding: 10px; font-size: 14px; }
-          .mn-mobile-menu { top: 60px; padding: 16px; gap: 12px; }
-          .mn-mobile-menu a { font-size: 13.5px; padding: 6px 0; }
+          .mn-mobile-menu { padding: 80px 20px 20px; gap: 12px; }
+          .mn-mobile-menu a { font-size: 14.5px; padding: 8px 16px; }
         }
 
         /* ══════════════════════════════════════
@@ -1067,9 +1078,9 @@ export default function MediNexLanding() {
           .mn-demo-form-group input { padding: 7px 10px; font-size: 12px; border-radius: 8px; }
           .mn-demo-submit { padding: 9px; font-size: 13px; border-radius: 8px; }
           .mn-demo-close { width: 26px; height: 26px; top: 12px; right: 12px; }
-          .mn-mobile-menu { top: 56px; padding: 14px; gap: 10px; }
-          .mn-mobile-menu a { font-size: 13px; padding: 5px 0; }
-          .mn-mobile-menu .mn-btn-primary, .mn-mobile-menu .mn-btn-ghost { padding: 10px; font-size: 12px; }
+          .mn-mobile-menu { padding: 70px 16px 16px; gap: 10px; width: 280px; }
+          .mn-mobile-menu a { font-size: 13.5px; padding: 8px 12px; }
+          .mn-mobile-menu .mn-btn-primary, .mn-mobile-menu .mn-btn-ghost { padding: 10px; font-size: 13px; }
           .mn-logo img { height: 30px !important; }
           .mn-nav-inner { padding: 12px 0; }
         }
@@ -1095,21 +1106,25 @@ export default function MediNexLanding() {
             <Link href="/signup" className="mn-btn-free-trial">free 14 days trial</Link>
           </div>
 
-          <button className="mn-burger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+          <button className={`mn-burger${menuOpen ? ' open' : ''}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
             <span /><span /><span />
           </button>
         </div>
-        {menuOpen && (
-          <div className="mn-mobile-menu">
-            <a href="#solutions" onClick={() => setMenuOpen(false)}>Solutions</a>
-            <a href="#ai-prescription" onClick={() => setMenuOpen(false)}>AI Rx</a>
-            <a href="#features" onClick={() => setMenuOpen(false)}>Features</a>
-            <a href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</a>
-            <a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a>
+        
+        <div className={`mn-mobile-menu-backdrop${menuOpen ? ' open' : ''}`} onClick={() => setMenuOpen(false)} />
+        
+        <div className={`mn-mobile-menu${menuOpen ? ' open' : ''}`}>
+          <a href="#solutions" onClick={() => setMenuOpen(false)}>Solutions</a>
+          <a href="#ai-prescription" onClick={() => setMenuOpen(false)}>AI Rx</a>
+          <a href="#features" onClick={() => setMenuOpen(false)}>Features</a>
+          <a href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</a>
+          <a href="#faq" onClick={() => setMenuOpen(false)}>FAQ</a>
+          <div className="mn-mobile-menu-divider" />
+          <div className="mn-mobile-menu-buttons">
             <Link href="/login" className="mn-btn-ghost" onClick={() => setMenuOpen(false)}>Sign In</Link>
-            <Link href="/signup" className="mn-btn-free-trial" onClick={() => setMenuOpen(false)} style={{width: '100%'}}>free 14 days trial</Link>
+            <Link href="/signup" className="mn-btn-free-trial" onClick={() => setMenuOpen(false)}>Free Trial</Link>
           </div>
-        )}
+        </div>
       </nav>
 
       {/* HERO */}

@@ -70,6 +70,16 @@ model Hospital {
   ipdMedicationAdmins   IPDMedicationAdministration[]
   ipdBedTransfers       IPDBedTransfer[]
   ipdDischargeSummaries IPDDischargeSummary[]
+
+  // Subscription & Trial
+  trialStartDate        DateTime?
+  trialEndDate          DateTime?
+  subscriptionStatus    SubscriptionStatus   @default(TRIAL)
+  subscriptionPlan      SubscriptionPlan?
+  billingCycle          BillingCycle?
+  subscriptionStartDate DateTime?
+  subscriptionEndDate   DateTime?
+  subscriptionPayments  SubscriptionPayment[]
 }
 
 model User {
@@ -604,6 +614,47 @@ model InventoryItem {
   @@unique([hospitalId, name, category])
   @@index([hospitalId])
   @@index([hospitalId, category])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SUBSCRIPTION PAYMENT TRACKING
+// ─────────────────────────────────────────────────────────────────────────────
+
+model SubscriptionPayment {
+  id         String           @id @default(uuid())
+  hospitalId String
+  amount     Float
+  plan       SubscriptionPlan
+  cycle      BillingCycle
+  paidAt     DateTime         @default(now())
+  validFrom  DateTime
+  validUntil DateTime
+  notes      String?          @db.Text
+  recordedBy String?
+  createdAt  DateTime         @default(now())
+  hospital   Hospital         @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+
+  @@index([hospitalId])
+  @@index([hospitalId, paidAt])
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  CANCELLED
+}
+
+enum SubscriptionPlan {
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
 }
 
 enum Role {

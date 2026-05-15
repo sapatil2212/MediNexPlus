@@ -6,7 +6,8 @@ import {
   LayoutDashboard, Building2, Activity, Settings, HelpCircle,
   LogOut, Search, Bell, MessageSquare, CheckCircle2, AlertTriangle,
   Plus, ChevronRight, Shield, TrendingUp, ServerCrash, Cpu, Database,
-  BarChart2, Filter, X, User, ChevronDown, Eye, Power, Trash2, MoreVertical, Menu
+  BarChart2, Filter, X, User, ChevronDown, Eye, Power, Trash2, MoreVertical, Menu,
+  CreditCard, Clock, RefreshCcw, Ban, Play, DollarSign, Calendar
 } from "lucide-react";
 
 type Hospital = {
@@ -21,6 +22,14 @@ type Hospital = {
   staff: number;
   appointments: number;
   departments: number;
+  trialStartDate: string | null;
+  trialEndDate: string | null;
+  subscriptionStatus: string;
+  subscriptionPlan: string | null;
+  billingCycle: string | null;
+  subscriptionStartDate: string | null;
+  subscriptionEndDate: string | null;
+  paymentsCount: number;
 };
 
 type ActivityItem = {
@@ -122,6 +131,21 @@ export default function SuperAdminDashboard() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [actionMenu, setActionMenu] = useState<string | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [subModal, setSubModal] = useState<Hospital | null>(null);
+  const [subAction, setSubAction] = useState<string>("");
+  const [subPlan, setSubPlan] = useState<string>("STARTER");
+  const [subCycle, setSubCycle] = useState<string>("MONTHLY");
+  const [subLoading, setSubLoading] = useState(false);
+  const [subMsg, setSubMsg] = useState("");
+  const [payModal, setPayModal] = useState<Hospital | null>(null);
+  const [payAmount, setPayAmount] = useState("");
+  const [payPlan, setPayPlan] = useState("STARTER");
+  const [payCycle, setPayCycle] = useState("MONTHLY");
+  const [payNotes, setPayNotes] = useState("");
+  const [payLoading, setPayLoading] = useState(false);
+  const [payMsg, setPayMsg] = useState("");
+  const [payHistory, setPayHistory] = useState<any[]>([]);
+  const [payHistoryLoading, setPayHistoryLoading] = useState(false);
 
   useEffect(()=>{
     fetch("/api/auth/me",{credentials:"include"}).then(r=>r.json()).then(d=>{
@@ -207,6 +231,80 @@ export default function SuperAdminDashboard() {
     } finally {
       setActionLoading(null);
     }
+  };
+
+  const handleSubAction = async () => {
+    if (!subModal) return;
+    setSubLoading(true); setSubMsg("");
+    try {
+      const body: any = { action: subAction };
+      if (subAction === "activate_subscription") { body.plan = subPlan; body.cycle = subCycle; }
+      const res = await fetch(`/api/superadmin/hospitals/${subModal.id}/subscription`, {
+        method: "PATCH", headers: { "Content-Type": "application/json" }, credentials: "include", body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSubMsg("✓ " + data.message);
+        setTimeout(() => { setSubModal(null); setSubMsg(""); window.location.reload(); }, 1200);
+      } else setSubMsg(data.message || "Failed");
+    } catch { setSubMsg("Network error"); }
+    finally { setSubLoading(false); }
+  };
+
+  const openSubModal = (h: Hospital, action: string) => {
+    setSubModal(h); setSubAction(action); setSubMsg("");
+    setSubPlan(h.subscriptionPlan || "STARTER"); setSubCycle(h.billingCycle || "MONTHLY");
+    setActionMenu(null);
+  };
+
+  const openPayModal = async (h: Hospital) => {
+    setPayModal(h); setPayAmount(""); setPayNotes(""); setPayMsg("");
+    setPayPlan(h.subscriptionPlan || "STARTER"); setPayCycle(h.billingCycle || "MONTHLY");
+    setActionMenu(null);
+    setPayHistoryLoading(true);
+    try {
+      const res = await fetch(`/api/superadmin/hospitals/${h.id}/subscription`, { credentials: "include" });
+      const data = await res.json();
+      if (data.success) setPayHistory(data.data || []);
+    } catch { /* ignore */ }
+    finally { setPayHistoryLoading(false); }
+  };
+
+  const handleRecordPayment = async () => {
+    if (!payModal || !payAmount) return;
+    setPayLoading(true); setPayMsg("");
+    try {
+      const res = await fetch(`/api/superadmin/hospitals/${payModal.id}/subscription`, {
+        method: "POST", headers: { "Content-Type": "application/json" }, credentials: "include",
+        body: JSON.stringify({ amount: payAmount, plan: payPlan, cycle: payCycle, notes: payNotes }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPayMsg("✓ " + data.message);
+        const hRes = await fetch(`/api/superadmin/hospitals/${payModal.id}/subscription`, { credentials: "include" });
+        const hData = await hRes.json();
+        if (hData.success) setPayHistory(hData.data || []);
+        setTimeout(() => { setPayMsg(""); }, 2000);
+        setPayAmount(""); setPayNotes("");
+      } else setPayMsg(data.message || "Failed");
+    } catch { setPayMsg("Network error"); }
+    finally { setPayLoading(false); }
+  };
+
+  const getSubStatusBadge = (h: Hospital) => {
+    const s = h.subscriptionStatus;
+    const now = new Date();
+    const trialEnd = h.trialEndDate ? new Date(h.trialEndDate) : null;
+    if (s === "TRIAL" && trialEnd) {
+      const daysLeft = Math.ceil((trialEnd.getTime() - now.getTime()) / 86400000);
+      if (daysLeft <= 0) return { label: "Trial Expired", bg: "#fef2f2", color: "#dc2626", border: "#fecaca" };
+      return { label: `Trial (${daysLeft}d left)`, bg: "#fefce8", color: "#ca8a04", border: "#fde68a" };
+    }
+    if (s === "ACTIVE") return { label: h.subscriptionPlan ? `${h.subscriptionPlan}` : "Active", bg: "#f0fdf4", color: "#16a34a", border: "#bbf7d0" };
+    if (s === "EXPIRED") return { label: "Expired", bg: "#fef2f2", color: "#dc2626", border: "#fecaca" };
+    if (s === "SUSPENDED") return { label: "Suspended", bg: "#fef2f2", color: "#dc2626", border: "#fecaca" };
+    if (s === "CANCELLED") return { label: "Cancelled", bg: "#f1f5f9", color: "#64748b", border: "#e2e8f0" };
+    return { label: s || "N/A", bg: "#f1f5f9", color: "#64748b", border: "#e2e8f0" };
   };
 
   const logout = async()=>{await fetch("/api/auth/logout",{method:"POST",credentials:"include"});router.push("/superadmin/login");};
@@ -564,20 +662,19 @@ export default function SuperAdminDashboard() {
                 ) : (
                   <div className="sad-tbl-wrap">
                     <table className="sad-tbl">
-                      <thead><tr><th>No</th><th>Hospital Name</th><th>Email</th><th>Mobile</th><th>Patients</th><th>Doctors</th><th>Staff</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+                      <thead><tr><th>No</th><th>Hospital Name</th><th>Email</th><th>Patients</th><th>Doctors</th><th>Subscription</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
                       <tbody>
                         {filtered.length === 0 ? (
-                          <tr><td colSpan={10} style={{textAlign:"center",padding:30,color:"#94a3b8"}}>No hospitals found</td></tr>
+                          <tr><td colSpan={9} style={{textAlign:"center",padding:30,color:"#94a3b8"}}>No hospitals found</td></tr>
                         ) : (
-                          filtered.map((h,i)=>(
+                          filtered.map((h,i)=>{const sb=getSubStatusBadge(h);return(
                             <tr key={h.id}>
                               <td style={{color:"#94a3b8",fontSize:11}}>{String(i+1).padStart(2,'0')}</td>
                               <td style={{fontWeight:600,color:"#1e293b"}}>{h.name}</td>
                               <td>{h.email}</td>
-                              <td style={{fontSize:11}}>{h.mobile}</td>
                               <td>{h.patients}</td>
                               <td>{h.doctors}</td>
-                              <td>{h.staff}</td>
+                              <td><span className="sad-badge" style={{background:sb.bg,color:sb.color,border:`1px solid ${sb.border}`}}>{sb.label}</span></td>
                               <td><span className="sad-badge" style={h.isVerified?{background:"#f0fdf4",color:"#16a34a",border:"1px solid #bbf7d0"}:{background:"#fefce8",color:"#ca8a04",border:"1px solid #fde68a"}}>{h.isVerified?"✓ Active":"⏳ Pending"}</span></td>
                               <td style={{fontSize:11}}>{new Date(h.createdAt).toLocaleDateString("en-IN")}</td>
                               <td>
@@ -591,11 +688,23 @@ export default function SuperAdminDashboard() {
                                   {actionMenu===h.id&&(
                                     <>
                                       <div style={{position:"fixed",inset:0,zIndex:80}} onClick={()=>setActionMenu(null)}/>
-                                      <div style={{position:"absolute",top:"100%",right:0,marginTop:4,background:"#fff",borderRadius:8,border:"1px solid #e2e8f0",boxShadow:"0 4px 12px rgba(0,0,0,0.1)",zIndex:90,minWidth:140,overflow:"hidden"}}>
-                                        <button onClick={()=>handleToggleStatus(h)} disabled={actionLoading===h.id} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:h.isVerified?"#f59e0b":"#10b981",display:"flex",alignItems:"center",gap:8}}>
+                                      <div style={{position:"absolute",bottom:"100%",right:0,marginBottom:4,background:"#fff",borderRadius:10,border:"1px solid #e2e8f0",boxShadow:"0 -4px 16px rgba(0,0,0,0.12)",zIndex:90,minWidth:180,overflow:"hidden",padding:4}}>
+                                        <button onClick={()=>openSubModal(h,"activate_subscription")} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#7c3aed",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#f5f3ff"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                                          <CreditCard size={13}/>Manage Subscription
+                                        </button>
+                                        <button onClick={()=>openPayModal(h)} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#0e898f",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#e6f4f4"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                                          <DollarSign size={13}/>Record Payment
+                                        </button>
+                                        {(h.subscriptionStatus==="TRIAL"||h.subscriptionStatus==="EXPIRED")&&(
+                                          <button onClick={()=>openSubModal(h,"extend_trial")} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#ca8a04",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#fefce8"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                                            <RefreshCcw size={13}/>Extend Trial
+                                          </button>
+                                        )}
+                                        <div style={{height:1,background:"#f1f5f9",margin:"4px 0"}}/>
+                                        <button onClick={()=>handleToggleStatus(h)} disabled={actionLoading===h.id} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:h.isVerified?"#f59e0b":"#10b981",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background=h.isVerified?"#fefce8":"#f0fdf4"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                                           <Power size={13}/>{h.isVerified?"Disable":"Enable"}
                                         </button>
-                                        <button onClick={()=>{setDeleteConfirm(h);setActionMenu(null);}} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#ef4444",display:"flex",alignItems:"center",gap:8}}>
+                                        <button onClick={()=>{setDeleteConfirm(h);setActionMenu(null);}} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#ef4444",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#fef2f2"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                                           <Trash2 size={13}/>Delete
                                         </button>
                                       </div>
@@ -604,7 +713,7 @@ export default function SuperAdminDashboard() {
                                 </div>
                               </td>
                             </tr>
-                          ))
+                          );})
                         )}
                       </tbody>
                     </table>
@@ -627,12 +736,12 @@ export default function SuperAdminDashboard() {
                 ) : (
                   <div className="sad-tbl-wrap">
                     <table className="sad-tbl">
-                      <thead><tr><th>No</th><th>Name</th><th>Email</th><th>Mobile</th><th>Patients</th><th>Doctors</th><th>Staff</th><th>Depts</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+                      <thead><tr><th>No</th><th>Name</th><th>Email</th><th>Mobile</th><th>Patients</th><th>Doctors</th><th>Staff</th><th>Subscription</th><th>Plan</th><th>Status</th><th>Actions</th></tr></thead>
                       <tbody>
                         {filtered.length === 0 ? (
                           <tr><td colSpan={11} style={{textAlign:"center",padding:30,color:"#94a3b8"}}>No hospitals found</td></tr>
                         ) : (
-                          filtered.map((h,i)=>(
+                          filtered.map((h,i)=>{const sb=getSubStatusBadge(h);return(
                             <tr key={h.id}>
                               <td style={{color:"#94a3b8",fontSize:11}}>{String(i+1).padStart(2,'0')}</td>
                               <td style={{fontWeight:600,color:"#1e293b"}}>{h.name}</td>
@@ -641,9 +750,9 @@ export default function SuperAdminDashboard() {
                               <td>{h.patients}</td>
                               <td>{h.doctors}</td>
                               <td>{h.staff}</td>
-                              <td>{h.departments}</td>
+                              <td><span className="sad-badge" style={{background:sb.bg,color:sb.color,border:`1px solid ${sb.border}`}}>{sb.label}</span></td>
+                              <td style={{fontSize:11}}>{h.subscriptionPlan||"—"}{h.billingCycle?` / ${h.billingCycle.toLowerCase()}`:""}</td>
                               <td><span className="sad-badge" style={h.isVerified?{background:"#f0fdf4",color:"#16a34a",border:"1px solid #bbf7d0"}:{background:"#fefce8",color:"#ca8a04",border:"1px solid #fde68a"}}>{h.isVerified?"✓ Active":"⏳ Pending"}</span></td>
-                              <td style={{fontSize:11}}>{new Date(h.createdAt).toLocaleDateString("en-IN")}</td>
                               <td>
                                 <div style={{display:"flex",gap:6,position:"relative"}}>
                                   <button onClick={()=>setViewHospital(h)} style={{padding:"5px 8px",borderRadius:6,border:"1px solid #e2e8f0",background:"#fff",cursor:"pointer",display:"flex",alignItems:"center",gap:4}} title="View Details">
@@ -655,11 +764,33 @@ export default function SuperAdminDashboard() {
                                   {actionMenu===h.id&&(
                                     <>
                                       <div style={{position:"fixed",inset:0,zIndex:80}} onClick={()=>setActionMenu(null)}/>
-                                      <div style={{position:"absolute",top:"100%",right:0,marginTop:4,background:"#fff",borderRadius:8,border:"1px solid #e2e8f0",boxShadow:"0 4px 12px rgba(0,0,0,0.1)",zIndex:90,minWidth:140,overflow:"hidden"}}>
-                                        <button onClick={()=>handleToggleStatus(h)} disabled={actionLoading===h.id} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:h.isVerified?"#f59e0b":"#10b981",display:"flex",alignItems:"center",gap:8}}>
+                                      <div style={{position:"absolute",bottom:"100%",right:0,marginBottom:4,background:"#fff",borderRadius:10,border:"1px solid #e2e8f0",boxShadow:"0 -4px 16px rgba(0,0,0,0.12)",zIndex:90,minWidth:180,overflow:"hidden",padding:4}}>
+                                        <button onClick={()=>openSubModal(h,"activate_subscription")} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#7c3aed",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#f5f3ff"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                                          <CreditCard size={13}/>Manage Subscription
+                                        </button>
+                                        <button onClick={()=>openPayModal(h)} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#0e898f",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#e6f4f4"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                                          <DollarSign size={13}/>Record Payment
+                                        </button>
+                                        {(h.subscriptionStatus==="TRIAL"||h.subscriptionStatus==="EXPIRED")&&(
+                                          <button onClick={()=>openSubModal(h,"extend_trial")} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#ca8a04",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#fefce8"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                                            <RefreshCcw size={13}/>Extend Trial
+                                          </button>
+                                        )}
+                                        {(h.subscriptionStatus==="SUSPENDED"||h.subscriptionStatus==="CANCELLED")&&(
+                                          <button onClick={()=>openSubModal(h,"reactivate")} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#10b981",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#f0fdf4"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                                            <Play size={13}/>Reactivate
+                                          </button>
+                                        )}
+                                        {h.subscriptionStatus==="ACTIVE"&&(
+                                          <button onClick={()=>openSubModal(h,"suspend")} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#f59e0b",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#fefce8"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                                            <Ban size={13}/>Suspend
+                                          </button>
+                                        )}
+                                        <div style={{height:1,background:"#f1f5f9",margin:"4px 0"}}/>
+                                        <button onClick={()=>handleToggleStatus(h)} disabled={actionLoading===h.id} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:h.isVerified?"#f59e0b":"#10b981",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background=h.isVerified?"#fefce8":"#f0fdf4"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                                           <Power size={13}/>{h.isVerified?"Disable":"Enable"}
                                         </button>
-                                        <button onClick={()=>{setDeleteConfirm(h);setActionMenu(null);}} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#ef4444",display:"flex",alignItems:"center",gap:8}}>
+                                        <button onClick={()=>{setDeleteConfirm(h);setActionMenu(null);}} style={{width:"100%",padding:"8px 12px",border:"none",background:"transparent",textAlign:"left",cursor:"pointer",fontSize:11,fontWeight:500,color:"#ef4444",display:"flex",alignItems:"center",gap:8,borderRadius:6}} onMouseEnter={e=>e.currentTarget.style.background="#fef2f2"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                                           <Trash2 size={13}/>Delete
                                         </button>
                                       </div>
@@ -668,7 +799,7 @@ export default function SuperAdminDashboard() {
                                 </div>
                               </td>
                             </tr>
-                          ))
+                          );})
                         )}
                       </tbody>
                     </table>
@@ -720,14 +851,14 @@ export default function SuperAdminDashboard() {
       {/* View Hospital Modal */}
       {viewHospital && (
         <div className="sad-modal-bg" onClick={(e) => { if (e.target === e.currentTarget) setViewHospital(null); }}>
-          <div className="sad-modal" style={{maxWidth:600}}>
+          <div className="sad-modal" style={{maxWidth:620}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
               <div className="sad-modal-title">Hospital Details</div>
               <button onClick={() => setViewHospital(null)} style={{background:"none",border:"none",cursor:"pointer",padding:4}}>
                 <X size={20} color="#64748b"/>
               </button>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
               {[
                 {label:"Hospital Name",value:viewHospital.name},
                 {label:"Email",value:viewHospital.email},
@@ -745,6 +876,17 @@ export default function SuperAdminDashboard() {
                 </div>
               ))}
             </div>
+            <div style={{marginTop:16,padding:14,borderRadius:12,background:"#f5f3ff",border:"1px solid #ede9fe"}}>
+              <div style={{fontSize:11,fontWeight:700,color:"#7c3aed",textTransform:"uppercase",letterSpacing:".06em",marginBottom:10}}>Subscription Info</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+                <div><div style={{fontSize:10,color:"#94a3b8",marginBottom:2}}>Status</div><div style={{fontSize:12,fontWeight:600,color:"#1e293b"}}>{getSubStatusBadge(viewHospital).label}</div></div>
+                <div><div style={{fontSize:10,color:"#94a3b8",marginBottom:2}}>Plan</div><div style={{fontSize:12,fontWeight:600,color:"#1e293b"}}>{viewHospital.subscriptionPlan||"N/A"}</div></div>
+                <div><div style={{fontSize:10,color:"#94a3b8",marginBottom:2}}>Cycle</div><div style={{fontSize:12,fontWeight:600,color:"#1e293b"}}>{viewHospital.billingCycle||"N/A"}</div></div>
+                <div><div style={{fontSize:10,color:"#94a3b8",marginBottom:2}}>Trial Start</div><div style={{fontSize:12,fontWeight:600,color:"#1e293b"}}>{viewHospital.trialStartDate?new Date(viewHospital.trialStartDate).toLocaleDateString("en-IN"):"N/A"}</div></div>
+                <div><div style={{fontSize:10,color:"#94a3b8",marginBottom:2}}>Trial End</div><div style={{fontSize:12,fontWeight:600,color:"#1e293b"}}>{viewHospital.trialEndDate?new Date(viewHospital.trialEndDate).toLocaleDateString("en-IN"):"N/A"}</div></div>
+                <div><div style={{fontSize:10,color:"#94a3b8",marginBottom:2}}>Payments</div><div style={{fontSize:12,fontWeight:600,color:"#1e293b"}}>{viewHospital.paymentsCount}</div></div>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -754,9 +896,9 @@ export default function SuperAdminDashboard() {
         <div className="sad-modal-bg" onClick={(e) => { if (e.target === e.currentTarget) setDeleteConfirm(null); }}>
           <div className="sad-modal">
             <div className="sad-modal-title">Delete Hospital</div>
-            <div className="sad-modal-sub">Are you sure you want to delete "{deleteConfirm.name}"? This action cannot be undone.</div>
+            <div className="sad-modal-sub">Are you sure you want to delete &quot;{deleteConfirm.name}&quot;? This action cannot be undone.</div>
             <div style={{background:"#fff5f5",border:"1px solid #fecaca",borderRadius:10,padding:12,marginTop:16}}>
-              <div style={{fontSize:11,color:"#ef4444",fontWeight:500}}>⚠️ Warning: This will permanently delete:</div>
+              <div style={{fontSize:11,color:"#ef4444",fontWeight:500}}>Warning: This will permanently delete:</div>
               <ul style={{fontSize:10,color:"#64748b",marginTop:8,paddingLeft:20}}>
                 <li>{deleteConfirm.patients} patient records</li>
                 <li>{deleteConfirm.doctors} doctor accounts</li>
@@ -770,6 +912,162 @@ export default function SuperAdminDashboard() {
                 {actionLoading === deleteConfirm.id ? <span className="sad-spin"/> : <Trash2 size={14}/>}
                 Delete Permanently
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Subscription Management Modal */}
+      {subModal && (
+        <div className="sad-modal-bg" onClick={(e) => { if (e.target === e.currentTarget) { setSubModal(null); setSubMsg(""); } }}>
+          <div className="sad-modal" style={{maxWidth:460}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+              <div className="sad-modal-title" style={{display:"flex",alignItems:"center",gap:8}}>
+                <CreditCard size={18} color="#7c3aed"/>
+                {subAction==="activate_subscription"?"Manage Subscription":subAction==="extend_trial"?"Extend Trial":subAction==="suspend"?"Suspend Hospital":subAction==="cancel"?"Cancel Subscription":"Reactivate Hospital"}
+              </div>
+              <button onClick={() => { setSubModal(null); setSubMsg(""); }} style={{background:"none",border:"none",cursor:"pointer",padding:4}}>
+                <X size={18} color="#64748b"/>
+              </button>
+            </div>
+            <div className="sad-modal-sub">{subModal.name}</div>
+
+            <div style={{background:"#fef7f7",border:"1px solid #fee2e2",borderRadius:10,padding:12,marginBottom:16}}>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:11}}>
+                <span style={{color:"#94a3b8"}}>Current Status</span>
+                <span style={{fontWeight:600,color:"#1e293b"}}>{getSubStatusBadge(subModal).label}</span>
+              </div>
+              {subModal.subscriptionPlan && (
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginTop:6}}>
+                  <span style={{color:"#94a3b8"}}>Current Plan</span>
+                  <span style={{fontWeight:600,color:"#1e293b"}}>{subModal.subscriptionPlan} / {subModal.billingCycle?.toLowerCase()}</span>
+                </div>
+              )}
+            </div>
+
+            {subAction==="activate_subscription"&&(
+              <>
+                <div className="sad-mf">
+                  <label className="sad-ml">Plan</label>
+                  <select className="sad-mi" value={subPlan} onChange={e=>setSubPlan(e.target.value)} style={{cursor:"pointer"}}>
+                    <option value="STARTER">Starter</option>
+                    <option value="PROFESSIONAL">Professional</option>
+                    <option value="ENTERPRISE">Enterprise</option>
+                  </select>
+                </div>
+                <div className="sad-mf">
+                  <label className="sad-ml">Billing Cycle</label>
+                  <select className="sad-mi" value={subCycle} onChange={e=>setSubCycle(e.target.value)} style={{cursor:"pointer"}}>
+                    <option value="MONTHLY">Monthly</option>
+                    <option value="YEARLY">Yearly</option>
+                  </select>
+                </div>
+              </>
+            )}
+
+            {subAction==="extend_trial"&&(
+              <div style={{background:"#fefce8",border:"1px solid #fde68a",borderRadius:10,padding:12,marginBottom:12}}>
+                <div style={{fontSize:12,color:"#92400e",fontWeight:500}}>This will extend the trial by 14 days from today.</div>
+              </div>
+            )}
+
+            {(subAction==="suspend"||subAction==="cancel")&&(
+              <div style={{background:"#fef2f2",border:"1px solid #fecaca",borderRadius:10,padding:12,marginBottom:12}}>
+                <div style={{fontSize:12,color:"#991b1b",fontWeight:500}}>
+                  {subAction==="suspend"?"The hospital will be suspended and users will not be able to log in.":"The subscription will be cancelled. Users will not be able to log in."}
+                </div>
+              </div>
+            )}
+
+            {subAction==="reactivate"&&(
+              <div style={{background:"#f0fdf4",border:"1px solid #bbf7d0",borderRadius:10,padding:12,marginBottom:12}}>
+                <div style={{fontSize:12,color:"#166534",fontWeight:500}}>
+                  {subModal.subscriptionPlan?"The hospital will be reactivated with their existing plan.":"The hospital will get a new 14-day trial."}
+                </div>
+              </div>
+            )}
+
+            {subMsg&&<div className={subMsg.startsWith("✓")?"sad-msg-ok":"sad-msg-err"} style={{marginBottom:12}}>{subMsg}</div>}
+
+            <div className="sad-ma">
+              <button type="button" className="sad-mcancel" onClick={() => { setSubModal(null); setSubMsg(""); }}>Cancel</button>
+              <button type="button" className="sad-msubmit" disabled={subLoading} onClick={handleSubAction} style={{background:subAction==="suspend"||subAction==="cancel"?"#ef4444":"#dc2626"}}>
+                {subLoading?<span className="sad-spin"/>:subAction==="activate_subscription"?"Activate Plan":subAction==="extend_trial"?"Extend Trial":subAction==="suspend"?"Suspend":subAction==="cancel"?"Cancel Subscription":"Reactivate"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Recording Modal */}
+      {payModal && (
+        <div className="sad-modal-bg" onClick={(e) => { if (e.target === e.currentTarget) { setPayModal(null); setPayMsg(""); } }}>
+          <div className="sad-modal" style={{maxWidth:540}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:4}}>
+              <div className="sad-modal-title" style={{display:"flex",alignItems:"center",gap:8}}>
+                <DollarSign size={18} color="#0e898f"/>
+                Payment Tracker
+              </div>
+              <button onClick={() => { setPayModal(null); setPayMsg(""); }} style={{background:"none",border:"none",cursor:"pointer",padding:4}}>
+                <X size={18} color="#64748b"/>
+              </button>
+            </div>
+            <div className="sad-modal-sub">{payModal.name}</div>
+
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:16}}>
+              <div className="sad-mf" style={{marginBottom:0}}>
+                <label className="sad-ml">Amount (INR)</label>
+                <input type="number" className="sad-mi" placeholder="e.g. 5000" value={payAmount} onChange={e=>setPayAmount(e.target.value)}/>
+              </div>
+              <div className="sad-mf" style={{marginBottom:0}}>
+                <label className="sad-ml">Plan</label>
+                <select className="sad-mi" value={payPlan} onChange={e=>setPayPlan(e.target.value)} style={{cursor:"pointer"}}>
+                  <option value="STARTER">Starter</option>
+                  <option value="PROFESSIONAL">Professional</option>
+                  <option value="ENTERPRISE">Enterprise</option>
+                </select>
+              </div>
+              <div className="sad-mf" style={{marginBottom:0}}>
+                <label className="sad-ml">Billing Cycle</label>
+                <select className="sad-mi" value={payCycle} onChange={e=>setPayCycle(e.target.value)} style={{cursor:"pointer"}}>
+                  <option value="MONTHLY">Monthly</option>
+                  <option value="YEARLY">Yearly</option>
+                </select>
+              </div>
+              <div className="sad-mf" style={{marginBottom:0}}>
+                <label className="sad-ml">Notes (Optional)</label>
+                <input type="text" className="sad-mi" placeholder="Payment ref, etc." value={payNotes} onChange={e=>setPayNotes(e.target.value)}/>
+              </div>
+            </div>
+
+            {payMsg&&<div className={payMsg.startsWith("✓")?"sad-msg-ok":"sad-msg-err"} style={{marginBottom:12}}>{payMsg}</div>}
+
+            <button type="button" className="sad-msubmit" disabled={payLoading||!payAmount} onClick={handleRecordPayment} style={{width:"100%",marginBottom:18}}>
+              {payLoading?<span className="sad-spin"/>:<><DollarSign size={14}/>Record Payment & Activate</>}
+            </button>
+
+            <div style={{borderTop:"1px solid #fef2f2",paddingTop:14}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#1e293b",marginBottom:10}}>Payment History</div>
+              {payHistoryLoading ? (
+                <div style={{textAlign:"center",padding:16,color:"#94a3b8",fontSize:11}}>Loading...</div>
+              ) : payHistory.length === 0 ? (
+                <div style={{textAlign:"center",padding:16,color:"#94a3b8",fontSize:11}}>No payments recorded yet</div>
+              ) : (
+                <div style={{maxHeight:200,overflowY:"auto"}}>
+                  {payHistory.map((p: any, i: number) => (
+                    <div key={i} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px",borderRadius:8,background:i%2===0?"#fef7f7":"#fff",border:"1px solid #fef2f2",marginBottom:4}}>
+                      <div>
+                        <div style={{fontSize:12,fontWeight:600,color:"#1e293b"}}>INR {p.amount?.toLocaleString()}</div>
+                        <div style={{fontSize:10,color:"#94a3b8",marginTop:2}}>{p.plan} / {p.cycle?.toLowerCase()} {p.notes?`— ${p.notes}`:""}</div>
+                      </div>
+                      <div style={{textAlign:"right"}}>
+                        <div style={{fontSize:10,fontWeight:600,color:"#64748b"}}>{new Date(p.paidAt).toLocaleDateString("en-IN")}</div>
+                        <div style={{fontSize:9,color:"#94a3b8"}}>Valid till {new Date(p.validUntil).toLocaleDateString("en-IN")}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [apiError, setApiError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [success, setSuccess] = useState(false);
+  const [trialPopup, setTrialPopup] = useState<{ type: string; message: string } | null>(null);
 
   const [fpOpen, setFpOpen] = useState(false);
   const [fpStep, setFpStep] = useState<FpStep>("email");
@@ -64,7 +65,14 @@ export default function LoginPage() {
           else router.push("/hospitaladmin/dashboard");
         }, 800);
       } else {
-        setApiError(data.message || "Invalid email or password.");
+        const msg = data.message || "Invalid email or password.";
+        const trialCodes = ["TRIAL_EXPIRED", "SUBSCRIPTION_EXPIRED", "ACCOUNT_SUSPENDED", "ACCOUNT_CANCELLED"];
+        const matchedCode = trialCodes.find(code => msg.startsWith(code + "::"));
+        if (matchedCode) {
+          setTrialPopup({ type: matchedCode, message: msg.split("::")[1] });
+        } else {
+          setApiError(msg);
+        }
       }
     } catch { setApiError("No internet connection. Please try again."); }
     finally { setLoading(false); }
@@ -489,6 +497,57 @@ export default function LoginPage() {
                   </button>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TRIAL / SUBSCRIPTION EXPIRED POPUP */}
+      {trialPopup && (
+        <div className="mn-fp-overlay">
+          <div className="mn-fp-backdrop" onClick={() => setTrialPopup(null)} />
+          <div className="mn-fp-modal" style={{ maxWidth: 420 }}>
+            <div className="mn-fp-topbar" style={{ borderBottom: "1px solid #FEE2E2" }}>
+              <div className="mn-fp-topbar-left">
+                <div className="mn-fp-icon" style={{ background: trialPopup.type === "TRIAL_EXPIRED" ? "#FEF3C7" : "#FEE2E2" }}>
+                  {trialPopup.type === "TRIAL_EXPIRED" ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  )}
+                </div>
+                <span className="mn-fp-title" style={{ color: trialPopup.type === "TRIAL_EXPIRED" ? "#92400E" : "#991B1B" }}>
+                  {trialPopup.type === "TRIAL_EXPIRED" && "Free Trial Ended"}
+                  {trialPopup.type === "SUBSCRIPTION_EXPIRED" && "Subscription Expired"}
+                  {trialPopup.type === "ACCOUNT_SUSPENDED" && "Account Suspended"}
+                  {trialPopup.type === "ACCOUNT_CANCELLED" && "Account Cancelled"}
+                </span>
+              </div>
+              <button className="mn-fp-close" onClick={() => setTrialPopup(null)}>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div className="mn-fp-body" style={{ textAlign: "center" }}>
+              <div style={{ width: 64, height: 64, borderRadius: "50%", background: trialPopup.type === "TRIAL_EXPIRED" ? "#FEF3C7" : "#FEE2E2", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", fontSize: 28 }}>
+                {trialPopup.type === "TRIAL_EXPIRED" ? "⏰" : trialPopup.type === "ACCOUNT_SUSPENDED" ? "🔒" : "⚠️"}
+              </div>
+              <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.7, marginBottom: 20 }}>
+                {trialPopup.message}
+              </p>
+              <div style={{ background: "#F8FAFC", border: "1px solid #E2E8F0", borderRadius: 12, padding: 16, textAlign: "left", marginBottom: 16 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Contact Support</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg>
+                  <a href="mailto:support@medinexplus.com" style={{ fontSize: 13, color: "#7C3AED", fontWeight: 600, textDecoration: "none" }}>support@medinexplus.com</a>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                  <a href="tel:+919876543210" style={{ fontSize: 13, color: "#7C3AED", fontWeight: 600, textDecoration: "none" }}>+91-9876543210</a>
+                </div>
+              </div>
+              <button onClick={() => setTrialPopup(null)} style={{ width: "100%", padding: 12, border: "none", borderRadius: 10, fontSize: 14, fontWeight: 700, fontFamily: "'Inter', sans-serif", cursor: "pointer", background: "linear-gradient(135deg, #7C3AED, #6D28D9)", color: "#fff", boxShadow: "0 3px 12px rgba(124,58,237,0.25)", transition: "all 0.15s" }}>
+                Close
+              </button>
             </div>
           </div>
         </div>
