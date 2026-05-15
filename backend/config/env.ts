@@ -13,11 +13,26 @@ const envSchema = z.object({
   SUPER_ADMIN_SECURITY_KEY: z.string(),
 });
 
-const _env = envSchema.safeParse(process.env);
+type Env = z.infer<typeof envSchema>;
 
-if (!_env.success) {
-  console.error("❌ Invalid environment variables:", _env.error.format());
-  throw new Error("Invalid environment variables");
+let _cachedEnv: Env | undefined;
+
+function getEnv(): Env {
+  if (_cachedEnv) return _cachedEnv;
+
+  const _env = envSchema.safeParse(process.env);
+
+  if (!_env.success) {
+    console.error("❌ Invalid environment variables:", _env.error.format());
+    throw new Error("Invalid environment variables");
+  }
+
+  _cachedEnv = _env.data;
+  return _cachedEnv;
 }
 
-export const env = _env.data;
+export const env = new Proxy({} as Env, {
+  get(_target, prop: string) {
+    return getEnv()[prop as keyof Env];
+  },
+});
