@@ -276,8 +276,8 @@ export default function MediNexLanding() {
         .mn-hero h1 em { font-style: italic; font-family: 'Playfair Display', Georgia, serif; font-weight: 500; color: ${DARK}; }
         .mn-hero-sub { font-size: 15px; color: ${GRAY}; line-height: 1.7; margin: 0 auto 30px; max-width: 480px; font-weight: 400; }
         .mn-hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-        .mn-btn-hero-primary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; color: #fff; background: linear-gradient(135deg, ${PURPLE}, ${PURPLE_DARK}); border: none; border-radius: 100px; cursor: pointer; transition: all 0.25s; font-family: 'Inter', sans-serif; text-decoration: none; box-shadow: 0 3px 14px rgba(124,58,237,0.28); letter-spacing: 0.01em; }
-        .mn-btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(124,58,237,0.4); }
+        .mn-btn-hero-primary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; color: #fff; background: linear-gradient(135deg, ${PURPLE}, ${PURPLE_DARK}); border: none; border-radius: 8px; cursor: pointer; transition: all 0.25s; font-family: 'Inter', sans-serif; text-decoration: none; letter-spacing: 0.01em; }
+        .mn-btn-hero-primary:hover { transform: translateY(-2px); }
         .mn-btn-hero-ghost { display: inline-flex; align-items: center; gap: 8px; padding: 9px 24px; font-size: 14px; font-weight: 500; color: ${DARK}; background: rgba(255,255,255,0.92); border: 1.5px solid rgba(124,58,237,0.16); border-radius: 100px; cursor: pointer; transition: all 0.25s; font-family: 'Inter', sans-serif; text-decoration: none; backdrop-filter: blur(8px); letter-spacing: 0.01em; }
         .mn-btn-hero-ghost:hover { border-color: ${PURPLE}; color: ${PURPLE}; transform: translateY(-2px); }
         .mn-hero-stamp { position: absolute; right: calc(5% + 8px); top: 135px; width: 96px; height: 96px; z-index: 3; }
@@ -587,8 +587,8 @@ export default function MediNexLanding() {
         @keyframes scaleIn { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 
         /* FREE TRIAL BUTTON */
-        .mn-btn-free-trial { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 22px; font-size: 13px; font-weight: 600; color: #fff; background: #DC2626; border: none; border-radius: 100px; cursor: pointer; text-decoration: none; position: relative; overflow: hidden; text-transform: lowercase; letter-spacing: 0.05em; transition: all 0.2s; font-family: 'Inter', sans-serif; box-shadow: 0 2px 12px rgba(220, 38, 38, 0.3); }
-        .mn-btn-free-trial:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(220, 38, 38, 0.4); background: #B91C1C; }
+        .mn-btn-free-trial { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 9px 22px; font-size: 13px; font-weight: 600; color: #fff; background: #DC2626; border: none; border-radius: 8px; cursor: pointer; text-decoration: none; position: relative; overflow: hidden; text-transform: lowercase; letter-spacing: 0.05em; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .mn-btn-free-trial:hover { transform: translateY(-2px); background: #B91C1C; }
 
         /* FOOTER */
         .mn-footer { background: ${DARK}; padding: 72px 5% 32px; }
