@@ -22,6 +22,7 @@ export const getSettings = async (hospitalId: string) => {
     hospitalId,
     hospitalName: hospital.name,
     bookingSlug: null,
+    logo: null,
     email: hospital.email,
     phone: hospital.mobile,
     address: "",

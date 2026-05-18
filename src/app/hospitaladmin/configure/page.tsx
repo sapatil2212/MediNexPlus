@@ -167,24 +167,34 @@ function SettingsPanel({hospitalId}:{hospitalId:string}){
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
-    setUploading(true);
-    const fd = new FormData(); fd.append("file", file); fd.append("type", file.type.includes("pdf") ? "document" : "image");
+    setUploading(true); setMsg("");
+    const isPdf = file.type.includes("pdf");
+    const fd = new FormData(); fd.append("file", file); fd.append("type", "letterhead");
     try {
-      const r = await fetch("/api/upload", { method: "POST", body: fd }); const d = await r.json();
-      if (d.success) { setF(p => ({ ...p, letterhead: d.data.url, letterheadType: file.type.includes("pdf") ? "PDF" : "IMAGE" })); setMsg("✓ Letterhead uploaded!"); }
-      else setMsg("Error: " + d.message);
+      const r = await fetch("/api/upload", { method: "POST", body: fd, credentials: "include" }); const d = await r.json();
+      if (d.success) {
+        const letterheadType = isPdf ? "PDF" : "IMAGE";
+        const updatedForm = { ...f, letterhead: d.data.url, letterheadType };
+        setF(updatedForm);
+        const saveRes = await api("/api/config/settings", "POST", updatedForm);
+        setMsg(saveRes.success ? "✓ Letterhead uploaded and saved!" : "✓ Letterhead uploaded! Click Save Settings to apply.");
+      } else setMsg("Upload failed: " + (d.message || "Unknown error"));
     } catch { setMsg("Upload failed"); } finally { setUploading(false); }
   };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; if (!file) return;
     if (!file.type.startsWith("image/")) { setMsg("Please upload an image file for the logo"); return; }
-    setUploadingLogo(true);
+    setUploadingLogo(true); setMsg("");
     const fd = new FormData(); fd.append("file", file); fd.append("type", "logo");
     try {
-      const r = await fetch("/api/upload", { method: "POST", body: fd }); const d = await r.json();
-      if (d.success) { setF(p => ({ ...p, logo: d.data.url })); setMsg("✓ Logo uploaded!"); }
-      else setMsg("Error: " + d.message);
+      const r = await fetch("/api/upload", { method: "POST", body: fd, credentials: "include" }); const d = await r.json();
+      if (d.success) {
+        const updatedForm = { ...f, logo: d.data.url };
+        setF(updatedForm);
+        const saveRes = await api("/api/config/settings", "POST", updatedForm);
+        setMsg(saveRes.success ? "✓ Logo uploaded and saved!" : "✓ Logo uploaded! Click Save Settings to apply.");
+      } else setMsg("Upload failed: " + (d.message || "Unknown error"));
     } catch { setMsg("Upload failed"); } finally { setUploadingLogo(false); }
   };
 

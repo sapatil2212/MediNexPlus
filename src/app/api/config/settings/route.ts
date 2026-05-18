@@ -46,7 +46,15 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const result = settingsSchema.safeParse(body);
+    // Normalize empty optional strings to undefined so min-length checks don't reject blank fields
+    const normalized = {
+      ...body,
+      bookingSlug: body.bookingSlug || undefined,
+      email: body.email || undefined,
+      logo: body.logo || undefined,
+      letterhead: body.letterhead || undefined,
+    };
+    const result = settingsSchema.safeParse(normalized);
     if (!result.success) return errorResponse("Validation failed", 400, result.error.issues);
 
     // Transform null to undefined for letterhead since upsertSettings expects string | undefined

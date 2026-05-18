@@ -10,6 +10,10 @@ cloudinary.config({
 });
 
 export async function POST(req: NextRequest) {
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    return errorResponse("File upload is not configured. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.", 503);
+  }
+
   const auth = await requireRole(req, ["HOSPITAL_ADMIN", "DOCTOR", "RECEPTIONIST", "STAFF", "SUB_DEPT_HEAD"]);
   if (auth.error) return auth.error;
 
@@ -20,7 +24,7 @@ export async function POST(req: NextRequest) {
 
     if (!file) return errorResponse("No file provided", 400);
 
-    const isDocType = uploadType === "document" || uploadType === "patient-document";
+    const isDocType = uploadType === "document" || uploadType === "patient-document" || uploadType === "letterhead";
     const maxSize = isDocType ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
     if (file.size > maxSize) {
       return errorResponse(`File too large. Max size is ${isDocType ? "10MB" : "5MB"}`, 400);
@@ -34,6 +38,8 @@ export async function POST(req: NextRequest) {
     else if (uploadType === "profile") folder = "hms/doctors/profiles";
     else if (uploadType === "patient-photo") folder = "hms/patients/photos";
     else if (uploadType === "patient-document") folder = "hms/patients/documents";
+    else if (uploadType === "logo") folder = `hms/hospitals/${auth.hospitalId}/logos`;
+    else if (uploadType === "letterhead") folder = `hms/hospitals/${auth.hospitalId}/letterheads`;
     else folder = "hms/doctors/images";
 
     const result: any = await new Promise((resolve, reject) => {
