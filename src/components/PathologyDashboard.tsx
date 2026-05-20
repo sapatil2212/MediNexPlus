@@ -260,6 +260,20 @@ export default function PathologyDashboard({profile,user,activeTab,onTabChange}:
 
     if(hasLetterhead){
       try{doc.addImage(letterheadDataUrl!,"PNG",0,0,pw,ph);}catch{}
+      // Hospital name + logo on top of letterhead
+      y=14;
+      const lhLogoUrl=await loadImageAsBase64(hospitalInfo?.logo||"");
+      const lhInfoX=lhLogoUrl?mx+28:mx;
+      if(lhLogoUrl){try{doc.addImage(lhLogoUrl,"PNG",mx,y,22,22);}catch{}}
+      doc.setFont("helvetica","bold");doc.setFontSize(16);doc.setTextColor(...green);
+      doc.text(hn,lhInfoX,y+6);
+      doc.setFont("helvetica","normal");doc.setFontSize(8);doc.setTextColor(...gray);
+      let lhY=y+12;
+      if(haddr){doc.text(haddr,lhInfoX,lhY);lhY+=4;}
+      if(hphone){doc.text("Phone: "+hphone,lhInfoX,lhY);lhY+=4;}
+      if(hemail){doc.text("Email: "+hemail,lhInfoX,lhY);lhY+=4;}
+      if(hospitalInfo?.gstNumber){doc.text("GSTIN: "+hospitalInfo.gstNumber,lhInfoX,lhY);lhY+=4;}
+      if(hospitalInfo?.registrationNo){doc.text("Reg: "+hospitalInfo.registrationNo,lhInfoX,lhY);}
       y=50;
       // Centered title — plain text, no background
       doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(...dark);
@@ -2330,7 +2344,13 @@ export default function PathologyDashboard({profile,user,activeTab,onTabChange}:
         <div className="mo-b" style={{overflowY:"auto" as any,...(hospitalInfo?.letterhead?{backgroundImage:`url(${hospitalInfo.letterhead.match(/\.pdf$/i)||hospitalInfo.letterhead.includes("/raw/upload/")?hospitalInfo.letterhead.replace("/upload/","/upload/f_png,pg_1/").replace(/\.pdf$/i,".png"):hospitalInfo.letterhead})`,backgroundSize:"100% 100%",backgroundPosition:"center",backgroundRepeat:"no-repeat",minHeight:"100vh"}:{})}}>
           {/* Hospital Letterhead Header */}
           {hospitalInfo?.letterhead?(
-            <div style={{display:"flex",justifyContent:"flex-end",padding:"70px 24px 0",marginBottom:20}}>
+            <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",padding:"70px 24px 0",marginBottom:20}}>
+              <div>
+                {hospitalInfo?.logo&&<img src={hospitalInfo.logo} alt="logo" style={{height:44,marginBottom:6,display:"block"}}/>}
+                <div style={{fontSize:17,fontWeight:800,color:"#047857"}}>{hn}</div>
+                {haddr&&<div style={{fontSize:10,color:"#6b7280",marginTop:2}}>{haddr}</div>}
+                {hphone&&<div style={{fontSize:10,color:"#6b7280"}}>{hphone}{hemail?` · ${hemail}`:""}</div>}
+              </div>
               <div style={{textAlign:"right" as any}}>
                 <div style={{display:"inline-block",padding:"4px 14px",borderRadius:6,background:"#047857",color:"#fff",fontSize:11,fontWeight:700,letterSpacing:"0.04em",marginBottom:6}}>LAB REPORT</div>
                 <div style={{fontSize:15,fontWeight:700,color:"#1e293b",margin:"4px 0"}}>{vRep.order?.orderNo}</div>
